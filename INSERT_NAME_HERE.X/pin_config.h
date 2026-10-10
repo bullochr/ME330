@@ -28,13 +28,13 @@
 
 // This is a guard condition so that contents of this file are not included
 // more than once.  
-#ifndef XC_HEADER_TEMPLATE_H
-#define	XC_HEADER_TEMPLATE_H
+#ifndef PIN_CONFIG
+#define	PIN_CONFIG
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 
 void configure_pins(void){
-        //Configure pins
+    //PWM pins for wheels (14 and 4)
     OC1CON1bits.OCTSEL = 0b111; //set PWM on pin 14 (left wheel) to use internal system clock
     OC2CON1bits.OCTSEL = 0b111; //set PWM on pin 4 (right wheel) to use internal system clock
     
@@ -58,6 +58,24 @@ void configure_pins(void){
     
     _OC1IF = 1; //clear flag on pin 14 
     _OC2IF = 1; //clear flag on pin 4 
+    
+    //PWM for servo motor (5)
+    
+    //Digital output pins for stepper DIR (12, 13)
+    _TRISB8 = 0; //configure pin 12 (right wheel) for output
+    _TRISB9 = 0; //configure pin 13 (left wheel) for output
+    
+    _LATB8 = 0; //set latch to 0
+    _LATB9 = 0;
+    
+    
+    //Analog input for ball color QRD (3))
+    
+    //Analog input for distance sensors, front, left and right (16, 17, 18)
+    
+    //Analog input for satellite IR sensor (2)
+    
+    //Analog input for sample collection site (15)
     
 }
 

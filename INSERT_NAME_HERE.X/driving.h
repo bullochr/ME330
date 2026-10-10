@@ -28,8 +28,8 @@
 
 // This is a guard condition so that contents of this file are not included
 // more than once.  
-#ifndef XC_DRIVING
-#define	XC_DRIVING
+#ifndef DRIVING
+#define	DRIVING
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 #include "global_variables.h"
@@ -43,13 +43,13 @@ int getNumSteps(int dist_mm){
 void RotateLeftWheelDistance(int dist_mm){
     int num_steps = getNumSteps(dist_mm); //calculate steps required to go desired distance
     if (dist_mm >= 0) {
-        state_var.left_wheel_direction = 1;
-        _LATA1 = 1; //TODO assign actual pin and direction
+        state.left_wheel_direction = 1;
+        _LATB9 = 1; //TODO assign actual direction
     }else{
-        state_var.left_wheel_direction = -1;
-        _LATA1 = 0; //TODO assign actual pin and direction
+        state.left_wheel_direction = -1;
+        _LATB9 = 0; //TODO assign actual direction
     }
-    state_var.left_wheel_target_steps = num_steps;
+    state.left_wheel_target_steps = num_steps;
     OC1CON1bits.OCM = 0b110; // ENABLE PWM on pin 14 (edge-aligned PWM pulses)
 }
 
@@ -59,38 +59,38 @@ void RotateLeftWheelDistance(int dist_mm){
 void RotateRightWheelDistance(int dist_mm){
     int num_steps = getNumSteps(dist_mm); //calculate steps required to go desired distance
     if (dist_mm >= 0) {
-        state_var.right_wheel_direction = 1;
-        _LATA2 = 0; //TODO assign actual pin and direction
+        state.right_wheel_direction = 1;
+        _LATB8 = 0; //TODO assign actual direction
     }else{
-        state_var.right_wheel_direction = -1;
-        _LATA2 = 1; //TODO assign actual pin and direction
+        state.right_wheel_direction = -1;
+        _LATB8 = 1; //TODO assign actual direction
     }
-    state_var.right_wheel_target_steps = num_steps;
+    state.right_wheel_target_steps = num_steps;
     OC2CON1bits.OCM = 0b110; // ENABLE PWM on pin 14 (edge-aligned PWM pulses)
 }
 
 void driveForwardDistance(int dist_mm){
     int num_steps = getNumSteps(dist_mm);
-    state_var.right_wheel_direction = 1;
-    state_var.left_wheel_direction = -1;
-    _LATA1 = 0; //TODO assign actual pin and direction
-    _LATA2 = 0; //TODO assign actual pin and direction
+    state.right_wheel_direction = 1;
+    state.left_wheel_direction = -1;
+    _LATB8 = 0; //TODO assign actual direction
+    _LATB9 = 0; //TODO assign actual direction
     
-    state_var.right_wheel_target_steps = num_steps;
-    state_var.left_wheel_target_steps = num_steps;
+    state.right_wheel_target_steps = num_steps;
+    state.left_wheel_target_steps = num_steps;
     OC1CON1bits.OCM = 0b110; // ENABLE PWM on pin 14 (edge-aligned PWM pulses)
     OC2CON1bits.OCM = 0b110; // ENABLE PWM on pin 4 (edge-aligned PWM pulses)
 }
 
 void driveBackwardDistance(int dist_mm){
     int num_steps = getNumSteps(dist_mm);
-    state_var.right_wheel_direction = -1;
-    state_var.left_wheel_direction = 1;
-    _LATA1 = 1; //TODO assign actual pin and direction
-    _LATA2 = 1; //TODO assign actual pin and direction
+    state.right_wheel_direction = -1;
+    state.left_wheel_direction = 1;
+    _LATB8 = 1; //TODO assign actual direction
+    _LATB9 = 1; //TODO assign actual direction
     
-    state_var.right_wheel_target_steps = num_steps;
-    state_var.left_wheel_target_steps = num_steps;
+    state.right_wheel_target_steps = num_steps;
+    state.left_wheel_target_steps = num_steps;
     OC1CON1bits.OCM = 0b110; // ENABLE PWM on pin 14 (edge-aligned PWM pulses)
     OC2CON1bits.OCM = 0b110; // ENABLE PWM on pin 4 (edge-aligned PWM pulses)
 }

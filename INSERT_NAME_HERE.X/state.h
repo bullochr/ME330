@@ -28,14 +28,14 @@
 
 // This is a guard condition so that contents of this file are not included
 // more than once.  
-#ifndef XC_STATE
-#define	XC_STATE
+#ifndef STATE
+#define	STATE
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 
 //Define a struct that will hold all of the state variables for the robot
 struct stateStruct{
-    int state; 
+    int state_num; 
         //state 0 - line following
             //state 1 - Milestone 5: basic motion
         //state 10 - collect sample
@@ -55,37 +55,49 @@ struct stateStruct{
     int right_wheel_target_steps;
     int left_wheel_direction; //1 is forward, -1 is backward
     int right_wheel_direction; //1 is forward, -1 is backward
-    int left_wheel_completed_steps;
-    int right_wheel_completed_steps;
+    int left_wheel_num_completed_steps;
+    int right_wheel_num_completed_steps;
+};
+
+//contains custom flag states
+struct flagStruct{
     int left_wheel_reached_target;
     int right_wheel_reached_target;
 };
 
 //instantiate a state struct called state_var
-struct stateStruct state_var;
+struct stateStruct state;
+
+//A global instance of flagStruct
+struct flagStruct flags;
 
 //fills state with default values, then returns filled state_var
 struct stateStruct initializeState(void){
-    state_var.state = 1;
-    state_var.left_line_sensor = 0;;
-    state_var.right_line_sensor = 0;
-    state_var.front_dist_sensor = 0;
-    state_var.left_dist_sensor = 0;
-    state_var.right_dist_sensor = 0;
-    state_var.is_laser_on = 0;
-    state_var.top_satellite_sensor = 0;
-    state_var.bottom_satellite_sensor = 0;
+    state.state_num = 0;
+    state.left_line_sensor = 0;;
+    state.right_line_sensor = 0;
+    state.front_dist_sensor = 0;
+    state.left_dist_sensor = 0;
+    state.right_dist_sensor = 0;
+    state.is_laser_on = 0;
+    state.top_satellite_sensor = 0;
+    state.bottom_satellite_sensor = 0;
     
-    state_var.left_wheel_target_steps = 0;
-    state_var.right_wheel_target_steps = 0;
-    state_var.left_wheel_direction = 0;
-    state_var.right_wheel_direction = 0;
-    state_var.left_wheel_completed_steps = 0;
-    state_var.right_wheel_completed_steps = 0;
-    state_var.left_wheel_reached_target = 0;
-    state_var.right_wheel_reached_target = 0;
+    state.left_wheel_target_steps = 0;
+    state.right_wheel_target_steps = 0;
+    state.left_wheel_direction = 0;
+    state.right_wheel_direction = 0;
+    state.left_wheel_num_completed_steps = 0;
+    state.right_wheel_num_completed_steps = 0;
     
-    return state_var;
+    return state;
+}
+
+struct flagStruct initializeFlags(void){
+    flags.left_wheel_reached_target = 0;
+    flags.right_wheel_reached_target = 0;
+    
+    return flags;
 }
 
 // Comment a function and leverage automatic documentation with slash star star

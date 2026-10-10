@@ -28,16 +28,16 @@
 
 // This is a guard condition so that contents of this file are not included
 // more than once.  
-#ifndef XC_GLOBAL_VARIABLE_DEFINITIONS
-#define	XC_GLOBAL_VARIABLE_DEFINITIONS
+#ifndef GLOBAL_VARIABLE_DEFINITIONS
+#define	GLOBAL_VARIABLE_DEFINITIONS
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 
 //Global constants
-int WHEEL_DIAMETER_MM = 50; //not an actual measurement
-int STEPS_PER_REV = 200; //just a guess
+int WHEEL_DIAMETER_MM = 90; //actually 89.95mm
+int STEPS_PER_REV = 200;
 float PI = 3.141592;
-int ROBOT_WIDTH_MM = 200; //distance from wheel to wheel, currently a guess
+int ROBOT_WIDTH_MM = 235; //distance from wheel to wheel
 
 #ifdef	__cplusplus
 extern "C" {
