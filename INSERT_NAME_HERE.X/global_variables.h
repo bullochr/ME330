@@ -33,11 +33,19 @@
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 
+//register definitions
+#define LEFT_WHEEL_PWM_CONFIG_1 OC1CON1bits;
+#define RIGHT_WHEEL_PWM_CONFIG_1 OC2CON1bits;
+#define LEFT_WHEEL_PWM_CONFIG_2 OC1CON2bits;
+#define RIGHT_WHEEL_PWM_CONFIG_2 OC2CON2bits;
+
+#define PWM_OFF 0b000;
+
 //Global constants
-int WHEEL_DIAMETER_MM = 90; //actually 89.95mm
-int STEPS_PER_REV = 200;
+float WHEEL_DIAMETER_MM = 89.95; //mm
+int STEPS_PER_REV = 800; //quarter stepping
 float PI = 3.141592;
-int ROBOT_WIDTH_MM = 235; //distance from wheel to wheel
+float ROBOT_WIDTH_MM = 235.0; //distance from wheel to wheel
 
 #ifdef	__cplusplus
 extern "C" {

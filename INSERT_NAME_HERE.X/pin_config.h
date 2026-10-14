@@ -32,32 +32,42 @@
 #define	PIN_CONFIG
 
 #include <xc.h> // include processor files - each processor file is guarded.  
+#include "global_variables.h"
+
+//register definitions
+#define LEFT_WHEEL_PWM_CONFIG_1 OC1CON1bits;
+#define RIGHT_WHEEL_PWM_CONFIG_1 OC2CON1bits;
+#define LEFT_WHEEL_PWM_CONFIG_2 OC1CON2bits;
+#define RIGHT_WHEEL_PWM_CONFIG_2 OC2CON2bits;
 
 void configure_pins(void){
     //PWM pins for wheels (14 and 4)
     OC1CON1bits.OCTSEL = 0b111; //set PWM on pin 14 (left wheel) to use internal system clock
     OC2CON1bits.OCTSEL = 0b111; //set PWM on pin 4 (right wheel) to use internal system clock
     
-    OC1CON1bits.OCM = 0b000; //initially DISABLE PWM on pin 14
-    OC2CON1bits.OCM = 0b000; //initially DISABLE PWM on pin 4
+    OC1CON1bits.OCM = 0b110; //initially DISABLE PWM on pin 14
+    OC2CON1bits.OCM = 0b110; //initially DISABLE PWM on pin 4
     
-    OC1CON2bits.SYNCSEL = 0b11111; //configure PWM module sync source on pin 14
-    OC2CON2bits.SYNCSEL = 0b11111; //configure PWM module sync source on pin 4
+    OC1CON2bits.SYNCSEL = 0x1F; //configure PWM module sync source on pin 14
+    OC2CON2bits.SYNCSEL = 0x1F; //configure PWM module sync source on pin 4
     
-    OC1RS = 4000; //set the period of PWM on PIN 14 in clock cycles
-    OC2RS = 4000; //set the period of PWM on PIN 4 in clock cycles
+    OC1CON2bits.OCTRIG = 0; //not sure what this does exactly
+    OC2CON2bits.OCTRIG = 0;
     
-    OC1R = 1999; //50% Duty cycle on pin 14
-    OC2R = 1999; //50% Duty cycle on pin 4
+    OC1RS = 6000; //set the period of PWM on PIN 14 in clock cycles
+    OC2RS = 6000; //set the period of PWM on PIN 4 in clock cycles
+    
+    OC1R = 2999; //50% Duty cycle on pin 14
+    OC2R = 2999; //50% Duty cycle on pin 4
     
     _OC1IP = 4; //set pin 14 interrupt priority to 4
     _OC2IP = 4; //set pin 4 interrupt priority to 4
     
-    _OC1IE = 0; //enable interrupt on pin 14
-    _OC2IE = 0; //enable interrupt on pin 4
+    _OC1IE = 1; //enable interrupt on pin 14
+    _OC2IE = 1; //enable interrupt on pin 4
     
-    _OC1IF = 1; //clear flag on pin 14 
-    _OC2IF = 1; //clear flag on pin 4 
+    _OC1IF = 0; //clear flag on pin 14 
+    _OC2IF = 0; //clear flag on pin 4 
     
     //PWM for servo motor (5)
     
