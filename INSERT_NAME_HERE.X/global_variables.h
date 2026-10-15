@@ -34,12 +34,6 @@
 #include <xc.h> // include processor files - each processor file is guarded.  
 
 //register definitions
-#define LEFT_WHEEL_PWM_CONFIG_1 OC1CON1bits;
-#define RIGHT_WHEEL_PWM_CONFIG_1 OC2CON1bits;
-#define LEFT_WHEEL_PWM_CONFIG_2 OC1CON2bits;
-#define RIGHT_WHEEL_PWM_CONFIG_2 OC2CON2bits;
-
-#define PWM_OFF 0b000;
 
 //Global constants
 float WHEEL_DIAMETER_MM = 89.95; //mm

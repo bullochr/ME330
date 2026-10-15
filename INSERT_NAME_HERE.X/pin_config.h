@@ -34,12 +34,6 @@
 #include <xc.h> // include processor files - each processor file is guarded.  
 #include "global_variables.h"
 
-//register definitions
-#define LEFT_WHEEL_PWM_CONFIG_1 OC1CON1bits;
-#define RIGHT_WHEEL_PWM_CONFIG_1 OC2CON1bits;
-#define LEFT_WHEEL_PWM_CONFIG_2 OC1CON2bits;
-#define RIGHT_WHEEL_PWM_CONFIG_2 OC2CON2bits;
-
 void configure_pins(void){
     //PWM pins for wheels (14 and 4)
     OC1CON1bits.OCTSEL = 0b111; //set PWM on pin 14 (left wheel) to use internal system clock
