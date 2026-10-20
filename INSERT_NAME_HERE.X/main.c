@@ -11,49 +11,15 @@
 void stateMachine(){
     switch(state.state_num){
         case 0: //line following
-            //if left sensor is low(black), turn right
-            //if right sensor is high(white), turn left
-            break;
-            
-        case 1: //basic motion
-            if(flags.right_wheel_reached_target && flags.left_wheel_reached_target){
-                resetWheelsState();
-                turn90Degrees(1); //right turn
-                state.state_num++;
-            }
-            break;
-        case 2:
-            if(flags.right_wheel_reached_target && flags.left_wheel_reached_target){
-                resetWheelsState();
-                driveForwardDistance(500); //right turn
-                state.state_num++;
-            }
-            break;
-        case 3:
-            if(flags.right_wheel_reached_target && flags.left_wheel_reached_target){
-                resetWheelsState();
-                turn90Degrees(0); //right turn
-                state.state_num++;
-            }
-            break;
-        case 4:
-            if(flags.right_wheel_reached_target && flags.left_wheel_reached_target){
-                resetWheelsState();
-                turn90Degrees(0); //right turn
-                state.state_num++;
-            }
-            break;
-        case 5:
-            if(flags.right_wheel_reached_target && flags.left_wheel_reached_target){
-                resetWheelsState();
-                driveForwardDistance(500); //right turn
-                state.state_num++;
-            }
-            break;
-        case 6:
-            if(flags.right_wheel_reached_target && flags.left_wheel_reached_target){
-                resetWheelsState();
-                state.state_num = 0;
+            if (isLeftOfLine()){ //if too far left, speed up left wheel
+                OC1RS = 5000; //slighlty faster on left wheel 
+               
+            }else if (isRightOfLine()){ //if  too far right, speed up right wheel
+                OC1RS = 5000; //slighlty faster on right wheel
+                
+            } else { // reset both wheel's speeds
+                OC1RS = 6000; //default speed on left wheel 
+                OC1RS = 6000; //default speed on right wheel 
             }
             break;
             
