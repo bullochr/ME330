@@ -35,12 +35,20 @@
 #include "global_variables.h"
 
 void configure_pins(void){
-    //PWM pins for wheels (14 and 4)
+    //clear all registers
+    ANSA = 0;
+    ANSB = 0;
+    TRISA = 0;
+    TRISB = 0;
+    LATA = 0;
+    LATB = 0;
+    
+    //PWM pins with interrupts for wheels (14 and 4)
     OC1CON1bits.OCTSEL = 0b111; //set PWM on pin 14 (left wheel) to use internal system clock
     OC2CON1bits.OCTSEL = 0b111; //set PWM on pin 4 (right wheel) to use internal system clock
     
-    OC1CON1bits.OCM = 0b110; //initially DISABLE PWM on pin 14
-    OC2CON1bits.OCM = 0b110; //initially DISABLE PWM on pin 4
+    OC1CON1bits.OCM = 0b000; //initially DISABLE PWM on pin 14
+    OC2CON1bits.OCM = 0b000; //initially DISABLE PWM on pin 4
     
     OC1CON2bits.SYNCSEL = 0x1F; //configure PWM module sync source on pin 14
     OC2CON2bits.SYNCSEL = 0x1F; //configure PWM module sync source on pin 4
@@ -64,6 +72,20 @@ void configure_pins(void){
     _OC2IF = 0; //clear flag on pin 4 
     
     //PWM for servo motor (5)
+    OC3CON1bits.OCTSEL = 0b111; //set PWM on pin 5 (servo) to use internal system clock
+    
+    OC3CON1bits.OCM = 0b000; //initially DISABLE PWM on pin 5
+    
+    OC3CON2bits.SYNCSEL = 0x1F; //configure PWM module sync source on pin 5
+    
+    OC3CON2bits.OCTRIG = 0; //not sure what this does exactly
+    
+    OC3RS = 65535; //TODO: The period should be 50Hz (see datasheet), but that 
+    //requires 80000 counts with 8MHz osc, which overflows the 16bit register
+    //we could get 61Hz using OC3RS = 65535
+    //or use an internal timer with a prescaler
+    
+    OC3R = 0; //TODO: set duty cycle to define initial position of servo
     
     //Digital output pins for stepper DIR (12, 13)
     _TRISB8 = 0; //configure pin 12 (right wheel) for output
@@ -72,15 +94,33 @@ void configure_pins(void){
     _LATB8 = 0; //set latch to 0
     _LATB9 = 0;
     
+    //Analog input for ball color QRD (3)
+    _TRISA1 = 1; //set to input
+    _ANSA1 = 1; //set to analog
     
-    //Analog input for ball color QRD (3))
+    //Analog input for line following (6,7)
+    _TRISB2 = 1; //set pin 6 to input
+    _TRISA2 = 1; //set pin 7 to input
     
-    //Analog input for distance sensors, front, left and right (16, 17, 18)
+    _ANSB2 = 1; //set pin 6 to analog
+    _ANSA2 = 1; //set pin 7 to analog
+    
+    //Analog input for distance sensors, front (16), right (17), and left (18)
+    _TRISB13 = 1; //set pin 16 to input
+    _TRISB14 = 1; //set pin 17 to input
+    _TRISB15 = 1; //set pin 18 to input
+    
+    _ANSB13 = 1; //set pin 16 to analog
+    _ANSB14 = 1; //set pin 17 to analog
+    _ANSB15 = 1; //set pin 18 to analog
     
     //Analog input for satellite IR sensor (2)
+    _TRISA0 = 1; //set to input
+    _ANSA0 = 1; //set to analog
     
     //Analog input for sample collection site (15)
-    
+    _TRISB12 = 1; //set to input
+    _ANSB12 = 1; //set to analog
 }
 
 // Comment a function and leverage automatic documentation with slash star star
