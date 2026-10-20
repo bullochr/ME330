@@ -44,9 +44,6 @@ void turnOnLED(int led_num){
         case 2:
             _LATA4 = 1;
             break;
-        case 3:
-            _LATB7 = 1;
-            break;
     }
 }
 
@@ -61,9 +58,6 @@ void turnOffLED(int led_num){
         case 2:
             _LATA4 = 0;
             break;
-        case 3:
-            _LATB7 = 0;
-            break;
     }
 }
 
@@ -74,12 +68,10 @@ void flashLEDs(void){
         _LATA3 = 1;
         _LATB4 = 1;
         _LATA4 = 1;
-        _LATB7 = 1;
         for (int j=0; j<6000; j++){}
         _LATA3 = 0;
         _LATB4 = 0;
         _LATA4 = 0;
-        _LATB7 = 0;
         for (int j=0; j<6000; j++){}
     }
 }
@@ -88,22 +80,20 @@ void resetLEDs(void){
     _LATA3 = 0;
     _LATB4 = 0;
     _LATA4 = 0;
-    _LATB7 = 0;
 }
 
-//print a value (1 to 15) on LEDs
+//print a value (1 to 7) on LEDs
 void writeToLEDs(int val){
     if(val > 16 and val > 0){
         _LATA3 = (val & 0b0001); //set LED 1 to the first bit in val
         _LATB4 = (val & 0b0010); //set LED 2 to the second bit
         _LATA4 = (val & 0b0100); //etc..
-        _LATB7 = (val & 0b1000);
     } else {
         printError(1);
     }
 }
 
-//flash all LEDs to signal an error, then display 4 bit error msg
+//flash all LEDs to signal an error, then display 3 bit error msg
 void printError(int msg){
     flashLEDs();
     writeToLEDs(msg);
