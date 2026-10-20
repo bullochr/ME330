@@ -40,6 +40,7 @@ float WHEEL_DIAMETER_MM = 89.95; //mm
 int STEPS_PER_REV = 800; //quarter stepping
 float PI = 3.141592;
 float ROBOT_WIDTH_MM = 235.0; //distance from wheel to wheel
+float BLACK_THRESHOLD = 100; //TODO: set actual threshold for sensor value
 
 #ifdef	__cplusplus
 extern "C" {

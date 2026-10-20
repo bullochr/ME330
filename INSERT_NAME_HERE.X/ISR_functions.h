@@ -39,10 +39,12 @@
 //if wheel has reached it's target number of steps, turn off pwm and reset state
 void __attribute__((interrupt, no_auto_psv)) _OC1Interrupt(void){
     _OC1IF = 0;
-    state.left_wheel_num_completed_steps++;
-    if(state.left_wheel_num_completed_steps >= state.left_wheel_target_steps){ //if left wheel has reached target number of steps
-        flags.left_wheel_reached_target = 1; //set flag that left wheel has finished the commanded number of steps
-        OC1CON1bits.OCM = 0b000;
+    if (state.left_wheel_target_steps != 0){ //only run the following code if there is a non-zero step limit set
+        state.left_wheel_num_completed_steps++;
+        if(state.left_wheel_num_completed_steps >= state.left_wheel_target_steps){ //if left wheel has reached target number of steps
+            flags.left_wheel_reached_target = 1; //set flag that left wheel has finished the commanded number of steps
+            OC1CON1bits.OCM = 0b000;
+        }
     }
 }
 
@@ -50,10 +52,12 @@ void __attribute__((interrupt, no_auto_psv)) _OC1Interrupt(void){
 //if wheel has reached it's target number of steps, turn off pwm and reset state
 void __attribute__((interrupt, no_auto_psv)) _OC2Interrupt(void){
     _OC2IF = 0;
-    state.right_wheel_num_completed_steps++;
-    if(state.right_wheel_num_completed_steps >= state.right_wheel_target_steps){ //if right wheel has reached target number of steps
-        flags.right_wheel_reached_target = 1; //set flag that right wheel has finished the commanded number of steps
-        OC2CON1bits.OCM = 0b000;
+    if (state.right_wheel_target_steps != 0){
+        state.right_wheel_num_completed_steps++;
+        if(state.right_wheel_num_completed_steps >= state.right_wheel_target_steps){ //if right wheel has reached target number of steps
+            flags.right_wheel_reached_target = 1; //set flag that right wheel has finished the commanded number of steps
+            OC2CON1bits.OCM = 0b000;
+        }
     }
 }
 

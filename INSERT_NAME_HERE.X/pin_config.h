@@ -59,8 +59,8 @@ void configure_pins(void){
     OC1RS = 6000; //set the period of PWM on PIN 14 in clock cycles
     OC2RS = 6000; //set the period of PWM on PIN 4 in clock cycles
     
-    OC1R = 2999; //50% Duty cycle on pin 14
-    OC2R = 2999; //50% Duty cycle on pin 4
+    OC1R = 599; //10% Duty cycle on pin 14
+    OC2R = 599; //10% Duty cycle on pin 4
     
     _OC1IP = 4; //set pin 14 interrupt priority to 4
     _OC2IP = 4; //set pin 4 interrupt priority to 4
@@ -99,8 +99,8 @@ void configure_pins(void){
     _ANSA1 = 1; //set to analog
     
     //Analog input for line following (6,7)
-    _TRISB2 = 1; //set pin 6 to input
-    _TRISA2 = 1; //set pin 7 to input
+    _TRISB2 = 1; //set pin 6 to input (left of line sensor)
+    _TRISA2 = 1; //set pin 7 to input (on line sensor)
     
     _ANSB2 = 1; //set pin 6 to analog
     _ANSA2 = 1; //set pin 7 to analog

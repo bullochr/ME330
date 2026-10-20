@@ -118,6 +118,22 @@ void turn90Degrees(int turn_left){
     }
 }
 
+int isLeftOfLine(void){
+    if(_RA2 < WHITE_THRESHOLD){ //if the right sensor sees black, it is off the line
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+int isRightOfLine(void){
+    if(_RB2 > WHITE_THRESHOLD){ //if the right sensor sees white, it is off the line
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
 // Comment a function and leverage automatic documentation with slash star star
 /**
     <p><b>Function prototype:</b></p>
