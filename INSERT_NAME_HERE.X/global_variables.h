@@ -1,23 +1,3 @@
-/* Microchip Technology Inc. and its subsidiaries.  You may use this software 
- * and any derivatives exclusively with Microchip products. 
- * 
- * THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS".  NO WARRANTIES, WHETHER 
- * EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED 
- * WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY, AND FITNESS FOR A 
- * PARTICULAR PURPOSE, OR ITS INTERACTION WITH MICROCHIP PRODUCTS, COMBINATION 
- * WITH ANY OTHER PRODUCTS, OR USE IN ANY APPLICATION. 
- *
- * IN NO EVENT WILL MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE, 
- * INCIDENTAL OR CONSEQUENTIAL LOSS, DAMAGE, COST OR EXPENSE OF ANY KIND 
- * WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER CAUSED, EVEN IF MICROCHIP HAS 
- * BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE FORESEEABLE.  TO THE 
- * FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL CLAIMS 
- * IN ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF 
- * ANY, THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
- *
- * MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE 
- * TERMS. 
- */
 
 /* 
  * File:   
@@ -34,24 +14,37 @@
 #include <xc.h> // include processor files - each processor file is guarded.  
 
 //register definitions
+#define left_qrd_value ADC1BUF4 
+#define center_qrd_value ADC1BUF13 
+#define right_qrd_value ADC1BUF0 //TODO: reset this to pin 8, figure out why pin 8 has so much noise, its currently on pin 2
+
+#define left_wheel_PWM_period OC1RS
+#define right_wheel_PWM_period OC2RS
+#define left_wheel_PWM_state OC1CON1bits.OCM
+#define right_wheel_PWM_state OC2CON1bits.OCM
+
 
 //Global constants
-float WHEEL_DIAMETER_MM = 89.95; //mm
-int STEPS_PER_REV = 800; //quarter stepping
-float PI = 3.141592;
-float ROBOT_WIDTH_MM = 235.0; //distance from wheel to wheel
-float BLACK_THRESHOLD = 100; //TODO: set actual threshold for sensor value
+const float WHEEL_DIAMETER_MM = 89.95; //mm
+const int STEPS_PER_REV = 800; //quarter stepping
+const float PI = 3.141592;
+const float ROBOT_WIDTH_MM = 235.0; //distance from wheel to wheel
 
-#ifdef	__cplusplus
-extern "C" {
-#endif /* __cplusplus */
+const float KP = 1.0; //proportional error coefficient for PID line control
+const float KI = 0.0; //integral error coefficient for PID line control
+const float KD = 0.0; //derivative error coefficient for PID line control
+const int FORWARD = 0;
+const int BACKWARD = 1;
 
-    // TODO If C++ is being used, regular C code needs function names to have C 
-    // linkage so the functions can be used by the c code. 
+const int MAX_CORRECTION_VALUE = 5000;
+const int BASE_WHEEL_SPEED = 6000;
+const int BASE_WHEEL_PULSE_WIDTH = 299;
+const int PWM_OFF = 0b000;
+const int PWM_ON = 0b110;
 
-#ifdef	__cplusplus
-}
-#endif /* __cplusplus */
+#define QRD_FILTER_LENGTH 50;
+//const static int QRD_FILTER_LENGTH = 50; //line following averages the last n measurements
+
 
 #endif	/* XC_HEADER_TEMPLATE_H */
 

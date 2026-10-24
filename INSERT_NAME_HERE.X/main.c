@@ -4,56 +4,26 @@
 #include "driving.h" //all functions related to motion of the robot
 #include "pin_config.h" //configure pin settings
 #include "state.h" //defines state struct and flag struct and functions to initialize them
+#include "AD_Config.h" //configure analog to digital conversions
+#include "PWM_config.h"
 
 //Oscillator setup
 #pragma config FNOSC = FRC //F_osc = 8MHz, F_cy = 4MHz 
 
+int correction = 0;
+
 void stateMachine(){
     switch(state.state_num){
         case 0: //line following
-            //if left sensor is low(black), turn right
-            //if right sensor is high(white), turn left
-            break;
-            
-        case 1: //basic motion
-            if(flags.right_wheel_reached_target && flags.left_wheel_reached_target){
-                resetWheelsState();
-                turn90Degrees(1); //right turn
-                state.state_num++;
-            }
-            break;
-        case 2:
-            if(flags.right_wheel_reached_target && flags.left_wheel_reached_target){
-                resetWheelsState();
-                driveForwardDistance(500); //right turn
-                state.state_num++;
-            }
-            break;
-        case 3:
-            if(flags.right_wheel_reached_target && flags.left_wheel_reached_target){
-                resetWheelsState();
-                turn90Degrees(0); //right turn
-                state.state_num++;
-            }
-            break;
-        case 4:
-            if(flags.right_wheel_reached_target && flags.left_wheel_reached_target){
-                resetWheelsState();
-                turn90Degrees(0); //right turn
-                state.state_num++;
-            }
-            break;
-        case 5:
-            if(flags.right_wheel_reached_target && flags.left_wheel_reached_target){
-                resetWheelsState();
-                driveForwardDistance(500); //right turn
-                state.state_num++;
-            }
-            break;
-        case 6:
-            if(flags.right_wheel_reached_target && flags.left_wheel_reached_target){
-                resetWheelsState();
-                state.state_num = 0;
+//            left_wheel_PWM_period = BASE_WHEEL_SPEED - center_qrd_value;
+//            right_wheel_PWM_period = BASE_WHEEL_SPEED + center_qrd_value;
+            if (flags.ad_conversions_finished){
+                flags.ad_conversions_finished = 0;
+                int correction = getCorrectionFactor();
+                
+                //apply correction factor to wheel speeds
+                left_wheel_PWM_period = BASE_WHEEL_SPEED - correction;
+                right_wheel_PWM_period = BASE_WHEEL_SPEED + correction;
             }
             break;
             
@@ -68,7 +38,6 @@ void stateMachine(){
         
         default:
             break;
-            
     }
 }
 
@@ -80,16 +49,10 @@ void updateState(){
 }
 
 int main(void) {
-    //Clear registers
-    OC1CON1 = 0; //Pin 14
-    OC1CON2 = 0;
-    OC2CON1 = 0; //Pin 4
-    OC2CON2 = 0;
-    OC3CON1 = 0; //Pin 5
-    OC3CON2 = 0;
-       
-    //configure pins based on a function in pin_config.h
-    configure_pins();
+    //configure setup
+    configurePins();
+    configureAD();
+    configurePWM();
     
     //initialize a struct to hold the states of each custom flag
     flags = initializeFlags();
@@ -97,12 +60,12 @@ int main(void) {
     //initialize a struct to hold the variables that define the state of the robot
     state = initializeState();
     
-    state.state_num = 1; //set initial state to basic motion for milestone 5
+//    state.state_num = 0; 
     
-    driveForwardDistance(500); //forward 500mm
-    
+    initializeLineFollowing();
+        
     while(1){
-        updateState();
+//        updateState();
         stateMachine();
     }
     
