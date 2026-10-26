@@ -1,4 +1,4 @@
-27263577556691002
+27265370592074891
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -60290,6 +60290,13 @@ TO-220-3 Vertical RM 2.54mm
 0
 3
 3
+Custom_Library
+PIC_board
+
+
+0
+0
+0
 Custom_Library
 SOT-23_BSILKSCREEN
 SOT, 3 Pin (JEDEC TO-236 Var AB https://www.jedec.org/document_search?search_api_views_fulltext=TO-236), generated with kicad-footprint-generator ipc_gullwing_generator.py
