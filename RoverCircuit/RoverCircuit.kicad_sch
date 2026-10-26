@@ -4,6 +4,11 @@
 	(generator_version "9.0")
 	(uuid "58469410-397a-49a6-b9cd-aafc9ce066c5")
 	(paper "A4")
+	(title_block
+		(title "ME 330: Mars Mini Rover")
+		(date "2026-10-26")
+		(company "<INSERT NAME HERE> Rihard Bulloch, Kyle Chandler, Dane Baker, Spencer McHenry")
+	)
 	(lib_symbols
 		(symbol "Amplifier_Operational:LM324"
 			(pin_names
