@@ -4,22 +4,26 @@
 #include "driving.h" //all functions related to motion of the robot
 #include "pin_config.h" //configure pin settings
 #include "state.h" //defines state struct and flag struct and functions to initialize them
+#include "AD_Config.h" //configure analog to digital conversions
+#include "PWM_config.h"
 
 //Oscillator setup
 #pragma config FNOSC = FRC //F_osc = 8MHz, F_cy = 4MHz 
 
+int correction = 0;
+
 void stateMachine(){
     switch(state.state_num){
         case 0: //line following
-            if (isLeftOfLine()){ //if too far left, speed up left wheel
-                OC1RS = 5000; //slighlty faster on left wheel 
-               
-            }else if (isRightOfLine()){ //if  too far right, speed up right wheel
-                OC1RS = 5000; //slighlty faster on right wheel
+//            left_wheel_PWM_period = BASE_WHEEL_SPEED - center_qrd_value;
+//            right_wheel_PWM_period = BASE_WHEEL_SPEED + center_qrd_value;
+            if (flags.ad_conversions_finished){
+                flags.ad_conversions_finished = 0;
+                int correction = getCorrectionFactor();
                 
-            } else { // reset both wheel's speeds
-                OC1RS = 6000; //default speed on left wheel 
-                OC1RS = 6000; //default speed on right wheel 
+                //apply correction factor to wheel speeds
+                left_wheel_PWM_period = BASE_WHEEL_SPEED - correction;
+                right_wheel_PWM_period = BASE_WHEEL_SPEED + correction;
             }
             break;
             
@@ -34,7 +38,6 @@ void stateMachine(){
         
         default:
             break;
-            
     }
 }
 
@@ -46,16 +49,10 @@ void updateState(){
 }
 
 int main(void) {
-    //Clear registers
-    OC1CON1 = 0; //Pin 14
-    OC1CON2 = 0;
-    OC2CON1 = 0; //Pin 4
-    OC2CON2 = 0;
-    OC3CON1 = 0; //Pin 5
-    OC3CON2 = 0;
-       
-    //configure pins based on a function in pin_config.h
-    configure_pins();
+    //configure setup
+    configurePins();
+    configureAD();
+    configurePWM();
     
     //initialize a struct to hold the states of each custom flag
     flags = initializeFlags();
@@ -63,12 +60,12 @@ int main(void) {
     //initialize a struct to hold the variables that define the state of the robot
     state = initializeState();
     
-    state.state_num = 1; //set initial state to basic motion for milestone 5
+//    state.state_num = 0; 
     
-    driveForwardDistance(500); //forward 500mm
-    
+    initializeLineFollowing();
+        
     while(1){
-        updateState();
+//        updateState();
         stateMachine();
     }
     
