@@ -27,7 +27,35 @@ void stateMachine(){
             }
             break;
             
-        case 10: 
+        case 10: //testing all inputs and outputs
+            //reset outputs to test
+            led_1_state = 0;
+            led_2_state = 0;
+            laser_state = 0;
+            servo_pulse_width = 0;
+            
+            if (satellite_sensor_value > 2000){
+                laser_state = 1;
+            } 
+            if (ball_qrd_value < 2000){
+                servo_pulse_width = SERVO_PWM_PERIOD / 2;
+            }
+            if (sample_collection_IR > 2000){
+                servo_pulse_width = SERVO_PWM_PERIOD;
+            }
+            if (front_sharp_value < 2000){
+                led_1_state = 1;
+                led_2_state = 1;
+            }
+            if (left_sharp_value < 2000){
+                led_1_state = 1;
+                led_2_state = 0;
+            }
+            if (right_sharp_value < 2000){
+                led_1_state = 0;
+                led_2_state = 1;
+            }
+            
             break;
         
         case 20:

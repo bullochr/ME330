@@ -12,7 +12,7 @@ void configureAD(void){
     AD1CON2 = 0;
     AD1CON3 = 0;
     AD1CON5 = 0;
-    AD1CSSL = 0;
+    AD1CSSL = 0; //clear channels to scan
     AD1CSSH = 0;
     
     _ADON = 0;    // AD1CON1<15> -- Turn off A/D during config
@@ -33,7 +33,7 @@ void configureAD(void){
                   // location corresponding to channel
     _CSCNA = 1;   // AD1CON2<10> -- Scans inputs specified
                   // in AD1CSSx registers
-    _SMPI = 2;	  // AD1CON2<6:2> -- Every (n+1)th conversion sent (n = number of channels sampled -1)
+    _SMPI = 8;	  // AD1CON2<6:2> -- Every (n+1)th conversion sent (n = number of channels sampled -1)
                   // to buffer, set interrupt flag after n+1 conversions
     _ALTS = 0;    // AD1CON2<0> -- Sample MUXA only
     
@@ -44,18 +44,15 @@ void configureAD(void){
     _ADCS = 0b00000011;    // AD1CON3<7:0> -- TAD needs to be at least 600 ns. Thus, _ADCS = 0b00000010 will give us the fastest AD clock given a 4 MHz system clock. 0b00000011 is slower than we could go, but still fast enough for our needs.
 
     // choose A2D channels you'd like to scan here.
-    //AN4 - pin 6 - Left line QRD
-    //AN13 - pin 7 - center line QRD
-    //AN14 - pin 8 - right line QRD
-    _CSS4 = 1;
-    _CSS13 = 1;
-    _CSS14 = 1;
+    _CSS4 = 1; //AN4 - pin 6 - Left line QRD
+    _CSS13 = 1; //AN13 - pin 7 - center line QRD
+    _CSS14 = 1; //AN14 - pin 8 - right line QRD
     _CSS0 = 1; //pin 2 - AN0 - satellite sensor
     _CSS1 = 1; //pin 3 - AN1 - ball QRD
-    _CSS12 = 1; //pin 15
-    _CSS11 = 1; //pin 16
-    _CSS10 = 1; //pin 17
-    _CSS9 = 1; // pin 18
+    _CSS12 = 1; //pin 15 - AN12 - Sample Collection IR
+    _CSS11 = 1; //pin 16 - AN11 - Front Sharp
+    _CSS10 = 1; //pin 17 - AN10 - Right Sharp
+    _CSS9 = 1; // pin 18 - AN9 - Left Sharp
     
     //AD1 interrupt
     _AD1IP = 4; //priority 

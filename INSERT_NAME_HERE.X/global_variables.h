@@ -13,22 +13,34 @@
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 
-//register definitions
+//register definitions - inputs
 #define left_qrd_value ADC1BUF4 
 #define center_qrd_value ADC1BUF13 
-#define right_qrd_value ADC1BUF0 //TODO: reset this to pin 8, figure out why pin 8 has so much noise, its currently on pin 2
+#define right_qrd_value ADC1BUF0 //TODO: reset this to ADC1BUF14 (pin 8), figure out why pin 8 has so much noise, its currently on pin 2
+#define satellite_sensor_value ADC1BUF0
+#define ball_qrd_value ADC1BUF1
+#define sample_collection_IR ADC1BUF12
+#define front_sharp_value ADC1BUF11
+#define right_sharp_value ADC1BUF10
+#define left_sharp_value ADC1BUF9
 
+
+//register definitions - outputs
 #define left_wheel_PWM_period OC1RS
 #define right_wheel_PWM_period OC2RS
 #define left_wheel_PWM_state OC1CON1bits.OCM
 #define right_wheel_PWM_state OC2CON1bits.OCM
-
+#define led_1_state _LATB4
+#define led_2_state _LATA4
+#define laser_state _LATB7
+#define servo_pulse_width OC3R
 
 //Global constants
 const float WHEEL_DIAMETER_MM = 89.95; //mm
 const int STEPS_PER_REV = 800; //quarter stepping
 const float PI = 3.141592;
 const float ROBOT_WIDTH_MM = 235.0; //distance from wheel to wheel
+const int SERVO_PWM_PERIOD = 65535;
 
 //const double KP = 1.0; //proportional error coefficient for PID line control
 

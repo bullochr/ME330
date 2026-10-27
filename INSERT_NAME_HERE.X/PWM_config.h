@@ -27,8 +27,8 @@ void configurePWM(void){
     OC1CON1bits.OCTSEL = 0b111; //set PWM on pin 14 (left wheel) to use internal system clock
     OC2CON1bits.OCTSEL = 0b111; //set PWM on pin 4 (right wheel) to use internal system clock
     
-    OC1CON1bits.OCM = 0b000; //initially DISABLE PWM on pin 14
-    OC2CON1bits.OCM = 0b000; //initially DISABLE PWM on pin 4
+    left_wheel_PWM_state = PWM_OFF; //initially DISABLE PWM on pin 14
+    right_wheel_PWM_state = PWM_OFF; //initially DISABLE PWM on pin 4
     
     OC1CON2bits.SYNCSEL = 0x1F; //configure PWM module sync source on pin 14
     OC2CON2bits.SYNCSEL = 0x1F; //configure PWM module sync source on pin 4
@@ -60,9 +60,9 @@ void configurePWM(void){
     
     OC3CON2bits.OCTRIG = 0; //not sure what this does exactly
     
-    OC3RS = 65535; //TODO: The period should be 50Hz (see datasheet), but that 
+    OC3RS = SERVO_PWM_PERIOD; //TODO: The period should be 50Hz (see datasheet), but that 
     //requires 80000 counts with 8MHz osc, which overflows the 16bit register
-    //we could get 61Hz using OC3RS = 65535
+    //we could get 61Hz using OC3RS = 65535, probably close enough
     //or use an internal timer with a prescaler
     
     OC3R = 0; //TODO: set duty cycle to define initial position of servo

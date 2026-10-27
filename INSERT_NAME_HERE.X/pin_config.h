@@ -23,9 +23,9 @@ void configurePins(void){
     LATA = 0;
     LATB = 0;
     
-    //Digital output pins for stepper DIR (12, 13)
-    _TRISB8 = 0; //configure pin 12 (right wheel) for output
-    _TRISB9 = 0; //configure pin 13 (left wheel) for output
+    //Analog input for satellite IR sensor (2)
+    _TRISA0 = 1; //set to input
+    _ANSA0 = 1; //set to analog
     
     //Analog input for ball color QRD (3)
     _TRISA1 = 1; //set to input
@@ -36,9 +36,24 @@ void configurePins(void){
     _TRISA2 = 1; //set pin 7 to input (on line sensor)
     _TRISA3 = 1; // right of line qrd
     
-    _ANSB2 = 1; //set pin 6 to analog
+    _ANSB2 = 1; //set pin 6 to analog 
     _ANSA2 = 1; //set pin 7 to analog
     _ANSA3 = 1; //pin 8, right of line
+    
+    //digital output for debugging LEDS ( 9-(RB4), 10-(RA4))
+    _TRISB4 = 0; //config pin 9 for output
+    _TRISA4 = 0; //config pin 10 for output  
+    
+    //digital output for laser control (11))
+    _TRISB7 = 0; //config pin 11 for output
+    
+    //Digital output pins for stepper DIR (12, 13)
+    _TRISB8 = 0; //configure pin 12 (right wheel) for output
+    _TRISB9 = 0; //configure pin 13 (left wheel) for output
+    
+    //Analog input for sample collection site (15)
+    _TRISB12 = 1; //set to input
+    _ANSB12 = 1; //set to analog
     
     //Analog input for distance sensors, front (16), right (17), and left (18)
     _TRISB13 = 1; //set pin 16 to input
@@ -49,21 +64,13 @@ void configurePins(void){
     _ANSB14 = 1; //set pin 17 to analog
     _ANSB15 = 1; //set pin 18 to analog
     
-    //Analog input for satellite IR sensor (2)
-    _TRISA0 = 1; //set to input
-    _ANSA0 = 1; //set to analog
     
-    //Analog input for sample collection site (15)
-    _TRISB12 = 1; //set to input
-    _ANSB12 = 1; //set to analog
     
-    //digital output for debugging LEDS (8-(RA3), 9-(RB4), 10-(RA4), 11-(RB7))
-    _TRISA3 = 0; //config pin 8 for output
-    _TRISB4 = 0; //config pin 9 for output
-    _TRISA4 = 0; //config pin 10 for output  
     
-    //digital output for laser control
-    _TRISB7 = 0; //config pin 11 for output
+    
+    
+    
+    
     
 }
 
