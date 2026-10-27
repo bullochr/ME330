@@ -44,7 +44,7 @@ const int SERVO_PWM_PERIOD = 65535;
 
 //const double KP = 1.0; //proportional error coefficient for PID line control
 
-const double KP = 1000.0; //proportional error coefficient for PID line control
+const double KP = 0.1; //proportional error coefficient for PID line control
 const float KI = 0.0; //integral error coefficient for PID line control
 const float KD = 0.0; //derivative error coefficient for PID line control
 const int FORWARD = 0;
