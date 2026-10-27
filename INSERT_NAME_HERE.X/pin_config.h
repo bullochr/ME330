@@ -27,9 +27,6 @@ void configurePins(void){
     _TRISB8 = 0; //configure pin 12 (right wheel) for output
     _TRISB9 = 0; //configure pin 13 (left wheel) for output
     
-    _LATB8 = 0; //set latch to 0
-    _LATB9 = 0;
-    
     //Analog input for ball color QRD (3)
     _TRISA1 = 1; //set to input
     _ANSA1 = 1; //set to analog
@@ -59,6 +56,15 @@ void configurePins(void){
     //Analog input for sample collection site (15)
     _TRISB12 = 1; //set to input
     _ANSB12 = 1; //set to analog
+    
+    //digital output for debugging LEDS (8-(RA3), 9-(RB4), 10-(RA4), 11-(RB7))
+    _TRISA3 = 0; //config pin 8 for output
+    _TRISB4 = 0; //config pin 9 for output
+    _TRISA4 = 0; //config pin 10 for output  
+    
+    //digital output for laser control
+    _TRISB7 = 0; //config pin 11 for output
+    
 }
 
 #endif	/* XC_HEADER_TEMPLATE_H */

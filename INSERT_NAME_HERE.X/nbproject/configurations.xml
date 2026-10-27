@@ -201,6 +201,11 @@
         <property key="relaxed-math" value="false"/>
         <property key="save-temps" value="false"/>
       </C30Global>
+      <snap>
+        <property key="memories.programmemory.ranges" value="0-2bff"/>
+        <property key="programmerToGoFilePath"
+                  value="C:/Users/richa/MPLABXProjects/ME330/INSERT_NAME_HERE.X/debug/default/INSERT_NAME_HERE_ptg"/>
+      </snap>
     </conf>
   </confs>
 </configurationDescriptor>
