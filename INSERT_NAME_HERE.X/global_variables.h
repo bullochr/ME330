@@ -30,14 +30,16 @@ const int STEPS_PER_REV = 800; //quarter stepping
 const float PI = 3.141592;
 const float ROBOT_WIDTH_MM = 235.0; //distance from wheel to wheel
 
-const float KP = 1.0; //proportional error coefficient for PID line control
+//const double KP = 1.0; //proportional error coefficient for PID line control
+
+const double KP = 1000.0; //proportional error coefficient for PID line control
 const float KI = 0.0; //integral error coefficient for PID line control
 const float KD = 0.0; //derivative error coefficient for PID line control
 const int FORWARD = 0;
 const int BACKWARD = 1;
 
-const int MAX_CORRECTION_VALUE = 5000;
 const int BASE_WHEEL_SPEED = 6000;
+const int MAX_CORRECTION_VALUE = 5000;
 const int BASE_WHEEL_PULSE_WIDTH = 299;
 const int PWM_OFF = 0b000;
 const int PWM_ON = 0b110;

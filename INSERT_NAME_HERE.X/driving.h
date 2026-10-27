@@ -127,8 +127,8 @@ float rightQRDAvg(void){
 }
 
 int getCorrectionFactor(void){
-    //calculate signed error: a value between -2^12 and 2^12 that describes how far from the line we are 
-    float e_p = (right_qrd_value - left_qrd_value);
+    //calculate signed error: a value between -1 and 1 (usually maxes out at 0.6) that describes how far from the line we are 
+    double e_p = (double)(right_qrd_value - left_qrd_value) / (double)(right_qrd_value + center_qrd_value + left_qrd_value);
 //    static float last_e_p = 0;
 //    static float e_i = 0;
     
@@ -140,7 +140,7 @@ int getCorrectionFactor(void){
     
 //    last_e_p = e_p;
     
-    int correction = e_p * KP;
+    double correction = e_p * KP;
     if (correction > MAX_CORRECTION_VALUE){correction = MAX_CORRECTION_VALUE;}
     if (correction < -MAX_CORRECTION_VALUE){correction = -MAX_CORRECTION_VALUE;}
     return correction;
