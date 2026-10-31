@@ -36,8 +36,8 @@ void configurePWM(void){
     OC1CON2bits.OCTRIG = 0; //not sure what this does exactly
     OC2CON2bits.OCTRIG = 0;
     
-    left_wheel_PWM_period = BASE_WHEEL_SPEED; //set the period of PWM on PIN 14 in clock cycles
-    right_wheel_PWM_period = BASE_WHEEL_SPEED; //set the period of PWM on PIN 4 in clock cycles
+    left_wheel_PWM_period = BASE_WHEEL_PERIOD; //set the period of PWM on PIN 14 in clock cycles
+    right_wheel_PWM_period = BASE_WHEEL_PERIOD; //set the period of PWM on PIN 4 in clock cycles
     
     OC1R = BASE_WHEEL_PULSE_WIDTH; //set duty cycle
     OC2R = BASE_WHEEL_PULSE_WIDTH; 
@@ -52,20 +52,24 @@ void configurePWM(void){
     _OC2IF = 0; //clear flag on pin 4 
     
     //PWM for servo motor (5)
-    OC3CON1bits.OCTSEL = 0b111; //set PWM on pin 5 (servo) to use internal system clock
+
+    //set up Timer 5 to control PWM speed
+    T5CON = 0; //clears timer 5 configuration register
+    T5CONbits.TCKPS = 0b01; //sets a prescaler value of 2
+    T5CONbits.TCS = 0; //sets the clock to the internal oscillator
+    T5CONbits.TON = 1; //turn on timer 5
+
+    OC3CON1bits.OCTSEL = 0b011; //set PWM on pin 5 (servo) to use internal system clock
     
-    OC3CON1bits.OCM = 0b000; //initially DISABLE PWM on pin 5
+    OC3CON1bits.OCM = PWM_ON; //initially ENSABLE PWM on pin 5
     
     OC3CON2bits.SYNCSEL = 0x1F; //configure PWM module sync source on pin 5
     
     OC3CON2bits.OCTRIG = 0; //not sure what this does exactly
     
-    OC3RS = SERVO_PWM_PERIOD; //TODO: The period should be 50Hz (see datasheet), but that 
-    //requires 80000 counts with 8MHz osc, which overflows the 16bit register
-    //we could get 61Hz using OC3RS = 65535, probably close enough
-    //or use an internal timer with a prescaler
+    OC3RS = SERVO_PWM_PERIOD; //datasheet suggests 50hz
     
-    OC3R = 0; //TODO: set duty cycle to define initial position of servo
+    OC3R = 3000; //TODO: set duty cycle to define initial position of servo
     
 }
 

@@ -1,4 +1,4 @@
-27265370592074891
+27270750427865426
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -60172,6 +60172,13 @@ ceramic
 3
 3
 Custom_Library
+12PinLevelShifter
+
+
+0
+12
+12
+Custom_Library
 100uF_Cap_Tipped
 
 
@@ -60353,6 +60360,20 @@ Untitled_4
 0
 3
 3
+Custom_Library
+Untitled_5
+
+
+0
+12
+12
+Custom_Library
+Variable_Buck_Converter
+
+
+0
+4
+4
 Custom_Library
 screw_terminal
 

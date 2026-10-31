@@ -11,6 +11,7 @@
       <itemPath>global_variables.h</itemPath>
       <itemPath>AD_config.h</itemPath>
       <itemPath>PWM_config.h</itemPath>
+      <itemPath>bucket_servo.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -201,6 +202,11 @@
         <property key="relaxed-math" value="false"/>
         <property key="save-temps" value="false"/>
       </C30Global>
+      <Tool>
+        <property key="memories.programmemory.ranges" value="0-2bff"/>
+        <property key="programmerToGoFilePath"
+                  value="C:/Users/richa/MPLABXProjects/ME330/INSERT_NAME_HERE.X/debug/default/INSERT_NAME_HERE_ptg"/>
+      </Tool>
       <snap>
         <property key="memories.programmemory.ranges" value="0-2bff"/>
         <property key="programmerToGoFilePath"

@@ -107,43 +107,38 @@ void initializeLineFollowing(void){
     right_wheel_PWM_state = PWM_ON;
 }
 
-float meanOfArray(float (*array)[50]){
-    int len = sizeof(*array) / sizeof((*array)[0]);
-    float sum = 0;
-    for(int i = 0; i < len; i++){
-        sum += (*array)[i];
-    }
-    return sum / len;
-}
-
-float rightQRDAvg(void){
-    static float right_qrd_values[50];
-    static int current_index = 0;
-    
-    right_qrd_values[current_index] = right_qrd_value;
-    
-    current_index ++;
-    return meanOfArray(&right_qrd_values);
+char allQrdsOnLine(void){
+    return (left_qrd_value > WHITE_THRESHOLD && center_qrd_value > WHITE_THRESHOLD && right_qrd_value > WHITE_THRESHOLD);
 }
 
 int getCorrectionFactor(void){
     //calculate signed error: a value between ... that describes how far from the line we are 
-    int e_p = (int)(right_qrd_value - left_qrd_value);
+    int e_p = ((int)right_qrd_value - (int)left_qrd_value);
     
-//    static float last_e_p = 0;
-//    static float e_i = 0;
+    static int last_e_p = 0;
+    static int e_i = 0;
     
     //add error to accumulated error
-//    e_i = e_i + e_p;
+    e_i = e_i + e_p;
     
     //find rate of change of error since last loop
-//    float e_d = e_p - last_e_p;
+    int e_d = e_p - last_e_p;
     
-//    last_e_p = e_p;
+    last_e_p = e_p;
     
     int correction = e_p * KP;
-    if (correction > MAX_CORRECTION_VALUE){correction = MAX_CORRECTION_VALUE;}
-    if (correction < (-1 * MAX_CORRECTION_VALUE)){correction = -1 * MAX_CORRECTION_VALUE;}
+    if (correction > MAX_CORRECTION_VALUE){
+        correction = MAX_CORRECTION_VALUE;
+        led_1_state = 1;
+    }else{
+        led_1_state = 0;
+    }
+    if (correction < (-1 * MAX_CORRECTION_VALUE)){
+        correction = -1 * MAX_CORRECTION_VALUE;
+        led_2_state = 1;
+    }else{
+        led_2_state = 0;
+    }
     return correction;
 }
 
