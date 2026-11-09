@@ -142,5 +142,10 @@ int getCorrectionFactor(void){
     return correction;
 }
 
+void initializeCanyonNavigation(void){
+    _LATB8 = FORWARD; //Drive right wheel forward
+    _LATB9 = FORWARD; //Drive left wheel forward
+}
+
 #endif	/* driving */
 
