@@ -57,16 +57,22 @@ void stateMachine(){
         case 10: //Canyon 
             if (left_sharp_value > LEFT_SHARP_THRESH_DIST && right_sharp_value > RIGHT_SHARP_THRESH_DIST){
                 resetWheelsState();
+                led_1_state = 1;
+                led_2_state = 1;
                 driveForwardDistance(300);
             }
             if (right_sharp_value > RIGHT_SHARP_THRESH_DIST && left_sharp_value < LEFT_SHARP_THRESH_DIST){
                 resetWheelsState();
                 turn90Degrees(1);
+                led_1_state = 1;
+                led_2_state = 0;
                 driveForwardDistance(300);
             }
             if (right_sharp_value < RIGHT_SHARP_THRESH_DIST && left_sharp_value > LEFT_SHARP_THRESH_DIST){
                 resetWheelsState();
                 turn90Degrees(0);
+                led_1_state = 0;
+                led_2_state = 1;
                 driveForwardDistance(300);
             }
             if(center_qrd_value < WHITE_THRESHOLD){
