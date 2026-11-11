@@ -54,31 +54,65 @@ void stateMachine(){
             }
             break;
             
-        case 10: //Canyon 
-            if (left_sharp_value > LEFT_SHARP_THRESH_DIST && right_sharp_value > RIGHT_SHARP_THRESH_DIST){
-                resetWheelsState();
-                led_1_state = 1;
-                led_2_state = 1;
-                driveForwardDistance(300);
+        case 10: //Canyon Forward 
+            if (allQrdsOnLine()){
+                if (right_sharp_value > RIGHT_SHARP_THRESH_DIST){
+                    turn90Degrees(1);
+                    state.state_num = 20;
+                }else{
+                    turn90Degrees(0);
+                    state.state_num = 20;
+                }
             }
-            if (right_sharp_value > RIGHT_SHARP_THRESH_DIST && left_sharp_value < LEFT_SHARP_THRESH_DIST){
+            if (flags.left_wheel_reached_target && flags.right_wheel_reached_target){
                 resetWheelsState();
-                turn90Degrees(1);
-                led_1_state = 1;
-                led_2_state = 0;
-                driveForwardDistance(300);
+                if (right_sharp_value > RIGHT_SHARP_THRESH_DIST && left_sharp_value < LEFT_SHARP_THRESH_DIST){
+                    led_1_state = 1;
+                    led_2_state = 0;
+                    turn90Degrees(1);
+                    state.state_num = 11;
+                } else if (right_sharp_value < RIGHT_SHARP_THRESH_DIST && left_sharp_value > LEFT_SHARP_THRESH_DIST){
+                    led_1_state = 0;
+                    led_2_state = 1;
+                    turn90Degrees(0);
+                    state.state_num = 11;
+                }else{
+                    led_1_state = 1;
+                    led_2_state = 1;
+                    driveForwardDistance(610);
+                    state.state_num = 10;
+                }
             }
-            if (right_sharp_value < RIGHT_SHARP_THRESH_DIST && left_sharp_value > LEFT_SHARP_THRESH_DIST){
-                resetWheelsState();
-                turn90Degrees(0);
-                led_1_state = 0;
-                led_2_state = 1;
-                driveForwardDistance(300);
-            }
-            if(center_qrd_value < WHITE_THRESHOLD){
-                initializeLineFollowing();
-            }           
+                
+//            if (left_sharp_value > LEFT_SHARP_THRESH_DIST && right_sharp_value > RIGHT_SHARP_THRESH_DIST){
+//                resetWheelsState();
+//                led_1_state = 1;
+//                led_2_state = 1;
+//                CanyonDriveForward(300);
+//            } else if (right_sharp_value > RIGHT_SHARP_THRESH_DIST && left_sharp_value < LEFT_SHARP_THRESH_DIST){
+//                resetWheelsState();
+//                turn90Degrees(1);
+//                led_1_state = 1;
+//                led_2_state = 0;
+//                CanyonDriveForward(300);
+//            } else if (right_sharp_value < RIGHT_SHARP_THRESH_DIST && left_sharp_value > LEFT_SHARP_THRESH_DIST){
+//                resetWheelsState();
+//                turn90Degrees(0);
+//                led_1_state = 0;
+//                led_2_state = 1;
+//                CanyonDriveForward(300);
+//            }
+////            if(center_qrd_value < WHITE_THRESHOLD){
+//                initializeLineFollowing();
+//            }           
             break;
+            
+        case 11: //Canyon Turn
+            if (flags.left_wheel_reached_target && flags.right_wheel_reached_target){
+                resetWheelsState();
+                driveForwardDistance(610);
+                state.state_num = 10;
+            }
         
         case 20://New Testing Code State
 //          reset outputs to test
@@ -123,14 +157,14 @@ int main(void) {
     flags = initializeFlags();
     
     //initialize a struct to hold the variables that define the state of the robot
-    state = initializeState();
+//    state = initializeState();
     
     state.state_num = 10; 
     
 //    initializeLineFollowing();
     initializeCanyonNavigation();
         
-    laser_state = 1;
+//    laser_state = 1;
     while(1){
 //        updateState();
         stateMachine();

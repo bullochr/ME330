@@ -142,8 +142,41 @@ int getCorrectionFactor(void){
     return correction;
 }
 
+void CanyonTurnRight(){
+    int dist_mm = (int)(0.25*PI*ROBOT_WIDTH_MM) + 20;
+    int num_steps = getNumSteps(dist_mm);
+    int x = 0;
+    while (x < num_steps)
+        x++;
+        
+    state.right_wheel_target_steps = num_steps;
+    _OC1IF = 1;
+}
+
+void CanyonTurnLeft(){  
+    int dist_mm = (int)(0.25*PI*ROBOT_WIDTH_MM) + 20;
+    int num_steps = getNumSteps(dist_mm);
+    state.left_wheel_target_steps = num_steps;
+    _OC1IF = 1;
+}
+
+void CanyonDriveForward(int dist_mm){
+    int num_steps = getNumSteps(dist_mm);
+    _LATB8 = FORWARD; //Drive right wheel forward
+    _LATB9 = FORWARD; //Drive left wheel forward
+    int x = 0;
+    while (x < num_steps){
+        state.right_wheel_target_steps = num_steps;
+        state.left_wheel_target_steps = num_steps;
+        left_wheel_PWM_state = PWM_ON;
+        right_wheel_PWM_state = PWM_ON;
+        x++;
+    }
+}
+
+
 void initializeCanyonNavigation(void){
-    driveForwardDistance(300);
+    CanyonDriveForward(610);
 }
 
 #endif	/* driving */
