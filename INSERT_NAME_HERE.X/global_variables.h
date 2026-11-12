@@ -39,8 +39,11 @@
 const float WHEEL_DIAMETER_MM = 89.95; //mm
 const int STEPS_PER_REV = 800; //quarter stepping
 const float PI = 3.141592;
-const float ROBOT_WIDTH_MM = 235.0; //distance from wheel to wheel
+const float ROBOT_WIDTH_MM = 201.2; //distance from wheel to wheel
 const int SERVO_PWM_PERIOD = 10000; //leave this at 10000 to keep pwm at 50hz
+const int FRONT_SHARP_THRESH_DIST = 1000; // Front SHARP distance. ~6in Higher = closer, lower = farther away
+const int LEFT_SHARP_THRESH_DIST = 500; // Left SHARP distance threshold. ~1.5 ft
+const int RIGHT_SHARP_THRESH_DIST = 1000; // RIght SHARP distance threshold. ~1.5 ft
 
 
 //Line following
