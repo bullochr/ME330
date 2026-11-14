@@ -29,11 +29,6 @@ void stateMachine(){
                 right_wheel_PWM_period = BASE_WHEEL_PERIOD + correction;
             }
             
-//            if(correction > 0){
-//                laser_state = 1;
-//            }else{
-//                laser_state = 0;
-//            }
 //            if(allQrdsOnLine()){//check if the robot ran into a T in the line
 //                //transition to state 1
 //                driveForwardDistance(DIST_AXLE_TO_QRDS + (LINE_WIDTH / 2));//forward until axle is over the line
@@ -59,14 +54,74 @@ void stateMachine(){
             }
             break;
             
-        case 10: //testing all inputs and outputs
-            //reset outputs to test
-            led_1_state = 0;
-            led_2_state = 0;
-            laser_state = 0;
-            servo_pulse_width = 0;
+        case 10: //Canyon Forward 
+            if (allQrdsOnLine()){
+                if (right_sharp_value > RIGHT_SHARP_THRESH_DIST){
+                    turn90Degrees(1);
+                    state.state_num = 20;
+                }else{
+                    turn90Degrees(0);
+                    state.state_num = 20;
+                }
+            }
+            if (flags.left_wheel_reached_target && flags.right_wheel_reached_target){
+                resetWheelsState();
+                if (right_sharp_value > RIGHT_SHARP_THRESH_DIST && left_sharp_value < LEFT_SHARP_THRESH_DIST){
+                    led_1_state = 1;
+                    led_2_state = 0;
+                    turn90Degrees(1);
+                    state.state_num = 11;
+                } else if (right_sharp_value < RIGHT_SHARP_THRESH_DIST && left_sharp_value > LEFT_SHARP_THRESH_DIST){
+                    led_1_state = 0;
+                    led_2_state = 1;
+                    turn90Degrees(0);
+                    state.state_num = 11;
+                }else{
+                    led_1_state = 1;
+                    led_2_state = 1;
+                    driveForwardDistance(610);
+                    state.state_num = 10;
+                }
+            }
+                
+//            if (left_sharp_value > LEFT_SHARP_THRESH_DIST && right_sharp_value > RIGHT_SHARP_THRESH_DIST){
+//                resetWheelsState();
+//                led_1_state = 1;
+//                led_2_state = 1;
+//                CanyonDriveForward(300);
+//            } else if (right_sharp_value > RIGHT_SHARP_THRESH_DIST && left_sharp_value < LEFT_SHARP_THRESH_DIST){
+//                resetWheelsState();
+//                turn90Degrees(1);
+//                led_1_state = 1;
+//                led_2_state = 0;
+//                CanyonDriveForward(300);
+//            } else if (right_sharp_value < RIGHT_SHARP_THRESH_DIST && left_sharp_value > LEFT_SHARP_THRESH_DIST){
+//                resetWheelsState();
+//                turn90Degrees(0);
+//                led_1_state = 0;
+//                led_2_state = 1;
+//                CanyonDriveForward(300);
+//            }
+////            if(center_qrd_value < WHITE_THRESHOLD){
+//                initializeLineFollowing();
+//            }           
+            break;
             
-//            if (satellite_sensor_value > 2000){
+        case 11: //Canyon Turn
+            if (flags.left_wheel_reached_target && flags.right_wheel_reached_target){
+                resetWheelsState();
+                driveForwardDistance(610);
+                state.state_num = 10;
+            }
+        
+        case 20://New Testing Code State
+//          reset outputs to test
+//            led_1_state = 0;
+//            led_2_state = 0;
+//            laser_state = 0;
+//            servo_pulse_width = 0;
+//            
+            //            if (satellite_sensor_value > 2000){
 //                laser_state = 1;
 //            } 
 //            if (ball_qrd_value < 2000){
@@ -75,22 +130,6 @@ void stateMachine(){
 //            if (sample_collection_IR > 2000){
 //                servo_pulse_width = SERVO_PWM_PERIOD;
 //            }
-            if (front_sharp_value < 2000){
-                led_1_state = 1;
-                led_2_state = 1;
-            }
-            if (left_sharp_value < 2000){
-                led_1_state = 1;
-                led_2_state = 0;
-            }
-            if (right_sharp_value < 2000){
-                led_1_state = 0;
-                led_2_state = 1;
-            }
-            
-            break;
-        
-        case 20:
             break;
             
         case 30:
@@ -118,13 +157,14 @@ int main(void) {
     flags = initializeFlags();
     
     //initialize a struct to hold the variables that define the state of the robot
-    state = initializeState();
+//    state = initializeState();
     
-//    state.state_num = 0; 
+    state.state_num = 10; 
     
-    initializeLineFollowing();
+//    initializeLineFollowing();
+    initializeCanyonNavigation();
         
-    laser_state = 1;
+//    laser_state = 1;
     while(1){
 //        updateState();
         stateMachine();
