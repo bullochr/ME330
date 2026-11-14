@@ -6161,12 +6161,6 @@
 		(uuid "4abfcb09-c59c-4449-9733-49a6a5fbccb7")
 	)
 	(junction
-		(at 16.51 87.63)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "50847d48-b14d-438d-ab64-3f8440df338f")
-	)
-	(junction
 		(at 52.07 97.79)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -6932,16 +6926,6 @@
 	)
 	(wire
 		(pts
-			(xy 16.51 83.82) (xy 16.51 87.63)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "33049bea-3ee3-4899-8d15-a0b9a7284606")
-	)
-	(wire
-		(pts
 			(xy 16.51 109.22) (xy 39.37 109.22)
 		)
 		(stroke
@@ -7012,7 +6996,7 @@
 	)
 	(wire
 		(pts
-			(xy 35.56 83.82) (xy 24.13 83.82)
+			(xy 35.56 83.82) (xy 27.94 83.82)
 		)
 		(stroke
 			(width 0)
@@ -7819,6 +7803,16 @@
 			(type default)
 		)
 		(uuid "94abd223-105b-49f1-813a-826d322a3351")
+	)
+	(wire
+		(pts
+			(xy 20.32 83.82) (xy 16.51 83.82)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "985c39e7-9a24-4b07-82f1-042f176aaf41")
 	)
 	(wire
 		(pts
@@ -11134,7 +11128,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 20.32 83.82 90)
+		(at 24.13 83.82 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -11143,7 +11137,7 @@
 		(fields_autoplaced yes)
 		(uuid "2586868a-7cbd-46f1-afd5-b98af5acbc9c")
 		(property "Reference" "R7"
-			(at 20.32 77.47 90)
+			(at 24.13 77.47 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11151,7 +11145,7 @@
 			)
 		)
 		(property "Value" "1MΩ"
-			(at 20.32 80.01 90)
+			(at 24.13 80.01 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11159,7 +11153,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
-			(at 20.32 85.598 90)
+			(at 24.13 85.598 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11168,7 +11162,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 20.32 83.82 0)
+			(at 24.13 83.82 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11177,7 +11171,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 20.32 83.82 0)
+			(at 24.13 83.82 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14882,6 +14876,72 @@
 		)
 	)
 	(symbol
+		(lib_id "power:GND")
+		(at 16.51 83.82 0)
+		(mirror x)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "8b136602-316c-4a25-9390-d778d30b2104")
+		(property "Reference" "#PWR044"
+			(at 16.51 77.47 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 16.51 78.74 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 16.51 83.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 16.51 83.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 16.51 83.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "4d6b84b3-6ca6-4388-895e-109ba2d8370f")
+		)
+		(instances
+			(project "RoverCircuit"
+				(path "/58469410-397a-49a6-b9cd-aafc9ce066c5"
+					(reference "#PWR044")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Connector_Generic:Conn_01x02")
 		(at 157.48 151.13 0)
 		(mirror y)
@@ -17342,7 +17402,6 @@
 	(symbol
 		(lib_id "Simulation_SPICE:NMOS")
 		(at 160.02 168.91 0)
-		(mirror x)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -17350,7 +17409,7 @@
 		(dnp no)
 		(uuid "cee879db-6402-4bd8-9d32-014abbcf61fd")
 		(property "Reference" "Q1"
-			(at 166.37 170.1801 0)
+			(at 166.37 167.6399 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17358,8 +17417,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "VN2106"
-			(at 166.37 167.6401 0)
+		(property "Value" "ZVN2106A"
+			(at 166.37 170.1799 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17368,7 +17427,7 @@
 			)
 		)
 		(property "Footprint" "Package_TO_SOT_THT:TO-92S"
-			(at 165.1 171.45 0)
+			(at 165.1 166.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17377,7 +17436,7 @@
 			)
 		)
 		(property "Datasheet" "https://ngspice.sourceforge.io/docs/ngspice-html-manual/manual.xhtml#cha_MOSFETs"
-			(at 160.02 156.21 0)
+			(at 160.02 181.61 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17395,7 +17454,7 @@
 			)
 		)
 		(property "Sim.Device" "NMOS"
-			(at 160.02 151.765 0)
+			(at 160.02 186.055 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17404,7 +17463,7 @@
 			)
 		)
 		(property "Sim.Type" "VDMOS"
-			(at 160.02 149.86 0)
+			(at 160.02 187.96 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17413,7 +17472,7 @@
 			)
 		)
 		(property "Sim.Pins" "1=D 2=G 3=S"
-			(at 160.02 153.67 0)
+			(at 160.02 184.15 0)
 			(effects
 				(font
 					(size 1.27 1.27)
