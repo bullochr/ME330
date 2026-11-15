@@ -25,14 +25,12 @@ void resetWheelsState(void){
     flags.right_wheel_reached_target = 0; //reset flag
     state.right_wheel_num_completed_steps = 0; //reset number of completed steps
     state.right_wheel_target_steps = 0; //reset target steps
-    right_wheel_PWM_period = BASE_WHEEL_PERIOD;
-//    right_wheel_PWM_state = PWM_OFF;
+    state.right_wheel_target_period = BASE_WHEEL_PERIOD;
     
     flags.left_wheel_reached_target = 0; //reset flag
     state.left_wheel_num_completed_steps = 0; //reset number of completed steps
     state.left_wheel_target_steps = 0; //reset target steps
-    left_wheel_PWM_period = BASE_WHEEL_PERIOD;
-//    left_wheel_PWM_state = PWM_OFF;
+    state.left_wheel_target_period = BASE_WHEEL_PERIOD;
 }
 
 void RotateLeftWheelDistance(int dist_mm){
@@ -149,6 +147,31 @@ int getCorrectionFactor(void){
     return correction;
 }
 
+void followLine(){
+    led_1_state = 0;
+    int correction = getCorrectionFactor();
+    int slow_down_factor = correction * SLOW_DOWN_COEFFICIENT;
+    
+    static int left_period = 0;
+    static int right_period = 0;
+    left_period = BASE_WHEEL_PERIOD - correction + slow_down_factor;
+    right_period = BASE_WHEEL_PERIOD + correction + slow_down_factor;
+
+    //force period to be greater than min period
+    //turn on led while period = min_period (max turning speed)
+    if (left_period < MIN_PERIOD){
+        left_period = MIN_PERIOD;
+        led_1_state = 1;
+    }
+    if (right_period < MIN_PERIOD){
+        right_period = MIN_PERIOD;
+        led_1_state = 1;
+    }
+
+    //apply correction factor to wheel speeds
+    state.left_wheel_target_period = left_period;
+    state.right_wheel_target_period = right_period;
+}
 
 void initializeCanyonNavigation(void){
     driveForwardDistance(610);

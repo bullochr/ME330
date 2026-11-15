@@ -27,6 +27,8 @@ struct stateStruct{
     int right_wheel_direction; //1 is forward, -1 is backward
     int left_wheel_num_completed_steps;
     int right_wheel_num_completed_steps;
+    int left_wheel_target_period; //target speed, actual speed approaches this in ramping up
+    int right_wheel_target_period;
 };
 
 //contains custom flag states
@@ -57,6 +59,9 @@ struct stateStruct initializeState(void){
     state.right_wheel_direction = 0;
     state.left_wheel_num_completed_steps = 0;
     state.right_wheel_num_completed_steps = 0;
+    state.left_wheel_target_period = BASE_WHEEL_PERIOD;
+    state.right_wheel_target_period = BASE_WHEEL_PERIOD;
+    
     
     return state;
 }

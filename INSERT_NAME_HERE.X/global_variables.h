@@ -53,6 +53,10 @@ const int BASE_WHEEL_PERIOD = 6000;
 const double KP = 3.5; //proportional error coefficient for PID line control
 const float KI = 0.0; //integral error coefficient for PID line control
 const float KD = 0.5; //derivative error coefficient for PID line control
+const float SLOW_DOWN_COEFFICIENT = 0.2; //what portion of correction factor is applied to slow down the robot while turning
+                                        //the sharper the robot is turning, the slower it will go
+const int RAMP_UP_SPEED = 5; //slope of ramp up function. Higher value is more 
+                             //responsive, lower value is less likely to skip steps
 
 const int FORWARD = 0;
 const int BACKWARD = 1;

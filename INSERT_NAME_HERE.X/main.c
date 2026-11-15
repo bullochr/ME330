@@ -20,26 +20,7 @@ void stateMachine(){
         case 0: //line following
             if (flags.ad_conversions_finished){
                 flags.ad_conversions_finished = 0;
-                led_1_state = 0;
-                int correction = getCorrectionFactor();
-                
-                static int left_period = 0;
-                static int right_period = 0;
-                left_period = BASE_WHEEL_PERIOD - correction;
-                right_period = BASE_WHEEL_PERIOD + correction;
-                
-                if (left_period < MIN_PERIOD){
-                    left_period = MIN_PERIOD;
-                    led_1_state = 1;
-                }
-                if (right_period < MIN_PERIOD){
-                    right_period = MIN_PERIOD;
-                    led_1_state = 1;
-                }
-                
-                //apply correction factor to wheel speeds
-                left_wheel_PWM_period = left_period;
-                right_wheel_PWM_period = right_period;
+                followLine();
             }
             
             if(allQrdsOnLine()){//check if the robot ran into a T in the line
