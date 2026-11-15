@@ -30,6 +30,8 @@
 #define right_wheel_PWM_period OC2RS
 #define left_wheel_PWM_state OC1CON1bits.OCM
 #define right_wheel_PWM_state OC2CON1bits.OCM
+#define left_wheel_dir _LATB8
+#define right_wheel_dir _LATB9
 #define led_1_state _LATB4
 #define led_2_state _LATA4
 #define laser_state _LATB7
@@ -47,33 +49,25 @@ const int RIGHT_SHARP_THRESH_DIST = 1000; // RIght SHARP distance threshold. ~1.
 
 
 //Line following
-const int LINE_WIDTH = 25;
-
-//functional, slow
-//const int BASE_WHEEL_SPEED = 6000;
-//const double KP = 2.0; //proportional error coefficient for PID line control
-//const float KI = 0.0; //integral error coefficient for PID line control
-//const float KD = 0.0; //derivative error coefficient for PID line control
-
-//tuned, fast
 const int BASE_WHEEL_PERIOD = 6000;
-const double KP = 1.5; //proportional error coefficient for PID line control
-const float KI = 0.1; //integral error coefficient for PID line control
-const float KD = 0.2; //derivative error coefficient for PID line control
+const double KP = 3.5; //proportional error coefficient for PID line control
+const float KI = 0.0; //integral error coefficient for PID line control
+const float KD = 0.5; //derivative error coefficient for PID line control
 
 const int FORWARD = 0;
 const int BACKWARD = 1;
 
-const int MAX_CORRECTION_VALUE = 5000;
+const int MIN_PERIOD = 900;
+const int MAX_INTEGRAL_VALUE = 200;
+
 const int BASE_WHEEL_PULSE_WIDTH = 299;
 const int PWM_OFF = 0b000;
 const int PWM_ON = 0b110;
-const int WHITE_THRESHOLD = 1000; //qrd values below this are considered to be on the line 
-const int DIST_AXLE_TO_QRDS = 20; // how far in front of the axle the qrd sensors are
-
-
-#define QRD_FILTER_LENGTH 50;
-//const static int QRD_FILTER_LENGTH = 50; //line following averages the last n measurements
+const int WHITE_THRESHOLD = 2000; //qrd values below this are considered to be on the line 
+const int BLACK_THRESHOLD = 2000; //qrd values above this are considered to be off the line 
+const int DIST_AXLE_TO_QRDS = 50; // how far in front of the axle the qrd sensors are
+const int CENTER_QRD_WHITE_THRESHOLD = 100;
+//const int CENTER_QRD_BLACK_THRESHOLD = 100;
 
 
 #endif	/* XC_HEADER_TEMPLATE_H */

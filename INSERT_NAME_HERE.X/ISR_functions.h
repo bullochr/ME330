@@ -53,5 +53,37 @@ void __attribute__ ((interrupt, no_auto_psv)) _ADC1Interrupt(void){
     _ADON = 1;    // AD1CON1<15> -- Turn on A/D
 }
 
+//LED 1 blinking timer
+void __attribute__ ((interrupt, no_auto_psv)) _T2Interrupt(void){
+    _T2IF = 0;
+    led_1_state = ~led_1_state; //toggle led state
+    
+    if(led_1_state == 0){ //if it just turned off, increment count
+        state.led_1_num_blinks ++;
+    }
+    
+    if(state.led_1_num_blinks == state.led_1_target_num_blinks){ //stop after target num blinks
+        state.led_1_num_blinks = 0;
+        state.led_1_target_num_blinks = 0;
+        _T2IE = 0; //disable timer 2 interrupt until called again
+    }
+}
+
+//LED 2 blinking timer
+void __attribute__ ((interrupt, no_auto_psv)) _T3Interrupt(void){
+    _T3IF = 0;
+    led_2_state = ~led_2_state; //toggle led state
+    
+    if(led_2_state == 0){ //if it just turned off, increment count
+        state.led_2_num_blinks ++;
+    }
+    
+    if(state.led_2_num_blinks == state.led_2_target_num_blinks){ //stop after target num blinks
+        state.led_2_num_blinks = 0;
+        state.led_2_target_num_blinks = 0;
+        _T3IE = 0; //disable timer 2 interrupt until called again
+    }
+}
+
 #endif	/* XC_HEADER_TEMPLATE_H */
 

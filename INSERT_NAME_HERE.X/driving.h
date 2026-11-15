@@ -25,23 +25,26 @@ void resetWheelsState(void){
     flags.right_wheel_reached_target = 0; //reset flag
     state.right_wheel_num_completed_steps = 0; //reset number of completed steps
     state.right_wheel_target_steps = 0; //reset target steps
-
+    right_wheel_PWM_period = BASE_WHEEL_PERIOD;
+//    right_wheel_PWM_state = PWM_OFF;
+    
     flags.left_wheel_reached_target = 0; //reset flag
     state.left_wheel_num_completed_steps = 0; //reset number of completed steps
     state.left_wheel_target_steps = 0; //reset target steps
+    left_wheel_PWM_period = BASE_WHEEL_PERIOD;
+//    left_wheel_PWM_state = PWM_OFF;
 }
 
 void RotateLeftWheelDistance(int dist_mm){
     int num_steps = getNumSteps(dist_mm); //calculate steps required to go desired distance
     if (dist_mm >= 0) {
-//        state.left_wheel_direction = 1;
-        _LATB8 = FORWARD; //forward
+        left_wheel_dir = FORWARD; //forward
     }else{
-//        state.left_wheel_direction = -1;
-        _LATB8 = BACKWARD; //backward
+        left_wheel_dir = BACKWARD; //backward
     }
-    state.left_wheel_target_steps = num_steps;
-    OC1CON1bits.OCM = 0b110; // ENABLE PWM on pin 14 (edge-aligned PWM pulses)
+    left_wheel_dir = FORWARD;
+    state.left_wheel_target_steps = abs(num_steps);
+    left_wheel_PWM_state = PWM_ON; // ENABLE PWM on pin 14 (edge-aligned PWM pulses)
 }
 
 //takes a distance in mm, turns right wheel on in the direction specified by the
@@ -50,20 +53,18 @@ void RotateLeftWheelDistance(int dist_mm){
 void RotateRightWheelDistance(int dist_mm){
     int num_steps = getNumSteps(dist_mm); //calculate steps required to go desired distance
     if (dist_mm >= 0) {
-//        state.right_wheel_direction = 1;
-        _LATB9 = FORWARD; //forward
+        right_wheel_dir = FORWARD; //forward
     }else{
-//        state.right_wheel_direction = -1;
-        _LATB9 = BACKWARD; //backward
+        right_wheel_dir = BACKWARD; //backward
     }
     state.right_wheel_target_steps = abs(num_steps);
-    OC2CON1bits.OCM = 0b110; // ENABLE PWM on pin 14 (edge-aligned PWM pulses)
+    right_wheel_PWM_state = PWM_ON; // ENABLE PWM on pin 14 (edge-aligned PWM pulses)
 }
 
 void driveForwardDistance(int dist_mm){
     int num_steps = getNumSteps(dist_mm);
-    _LATB8 = FORWARD; //Drive right wheel forward
-    _LATB9 = FORWARD; //Drive left wheel forward
+    left_wheel_dir = FORWARD; 
+    right_wheel_dir = FORWARD;
     
     state.right_wheel_target_steps = num_steps;
     state.left_wheel_target_steps = num_steps;
@@ -108,75 +109,49 @@ void initializeLineFollowing(void){
 }
 
 char allQrdsOnLine(void){
-    return (left_qrd_value > WHITE_THRESHOLD && center_qrd_value > WHITE_THRESHOLD && right_qrd_value > WHITE_THRESHOLD);
+    return (left_qrd_value < WHITE_THRESHOLD && center_qrd_value < CENTER_QRD_WHITE_THRESHOLD && right_qrd_value < WHITE_THRESHOLD);
+}
+
+char allQRDsBlack(void){
+    return (left_qrd_value > BLACK_THRESHOLD && center_qrd_value > CENTER_QRD_WHITE_THRESHOLD && right_qrd_value > BLACK_THRESHOLD);
+    return (center_qrd_value > BLACK_THRESHOLD);
+}
+
+char bothWheelsFinished(){
+    if (flags.left_wheel_reached_target && flags.right_wheel_reached_target){
+        resetWheelsState();
+        return 1;
+    } else{
+        return 0;
+    }
 }
 
 int getCorrectionFactor(void){
     //calculate signed error: a value between ... that describes how far from the line we are 
-    int e_p = ((int)right_qrd_value - (int)left_qrd_value);
+    float e_p = ((int)right_qrd_value - (int)left_qrd_value);
     
     static int last_e_p = 0;
-    static int e_i = 0;
+    static float e_i = 0;
+    float elapsed_time = TMR1; //value in TMR1 is the elapsed time since last measurement
+    TMR1 = 0; //reset TMR1, which measures the time between measurements
     
     //add error to accumulated error
-    e_i = e_i + e_p;
+    e_i = e_i + (e_p * elapsed_time);
+    if (e_i > MAX_INTEGRAL_VALUE){e_i = MAX_INTEGRAL_VALUE;} 
+    else if (e_i < -MAX_INTEGRAL_VALUE){e_i = -MAX_INTEGRAL_VALUE;}
     
     //find rate of change of error since last loop
-    int e_d = e_p - last_e_p;
+    float e_d = (e_p - last_e_p) / elapsed_time;
     
     last_e_p = e_p;
     
-    int correction = e_p * KP;
-    if (correction > MAX_CORRECTION_VALUE){
-        correction = MAX_CORRECTION_VALUE;
-        led_1_state = 1;
-    }else{
-        led_1_state = 0;
-    }
-    if (correction < (-1 * MAX_CORRECTION_VALUE)){
-        correction = -1 * MAX_CORRECTION_VALUE;
-        led_2_state = 1;
-    }else{
-        led_2_state = 0;
-    }
+    int correction = (e_p * KP) + (e_i * KI) + (e_d * KD);
     return correction;
-}
-
-void CanyonTurnRight(){
-    int dist_mm = (int)(0.25*PI*ROBOT_WIDTH_MM) + 20;
-    int num_steps = getNumSteps(dist_mm);
-    int x = 0;
-    while (x < num_steps)
-        x++;
-        
-    state.right_wheel_target_steps = num_steps;
-    _OC1IF = 1;
-}
-
-void CanyonTurnLeft(){  
-    int dist_mm = (int)(0.25*PI*ROBOT_WIDTH_MM) + 20;
-    int num_steps = getNumSteps(dist_mm);
-    state.left_wheel_target_steps = num_steps;
-    _OC1IF = 1;
-}
-
-void CanyonDriveForward(int dist_mm){
-    int num_steps = getNumSteps(dist_mm);
-    _LATB8 = FORWARD; //Drive right wheel forward
-    _LATB9 = FORWARD; //Drive left wheel forward
-    int x = 0;
-    while (x < num_steps){
-        state.right_wheel_target_steps = num_steps;
-        state.left_wheel_target_steps = num_steps;
-        left_wheel_PWM_state = PWM_ON;
-        right_wheel_PWM_state = PWM_ON;
-        x++;
-    }
 }
 
 
 void initializeCanyonNavigation(void){
-    CanyonDriveForward(610);
+    driveForwardDistance(610);
 }
 
 #endif	/* driving */
