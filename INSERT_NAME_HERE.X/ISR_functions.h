@@ -15,20 +15,15 @@
 #include "state.h"
 #include "global_variables.h"
 
+int convertVelocityToPeriod(float vel) {
+    return (int)((MAX_WHEEL_VELOCITY + MIN_WHEEL_PERIOD) - abs(vel));
+}
+
 //left wheel completed one step, called on every PWM rising edge
 //if wheel has reached it's target number of steps, turn off pwm and reset state
 void __attribute__((interrupt, no_auto_psv)) _OC1Interrupt(void){
     _OC1IF = 0;
-    
-    //check if period is within the step size (RAMP_UP_SPEED) of the target
-    if(left_wheel_PWM_period - state.left_wheel_target_period > RAMP_UP_SPEED){
-        if(left_wheel_PWM_period < state.left_wheel_target_period){
-            left_wheel_PWM_period += RAMP_UP_SPEED;
-        } else{
-            left_wheel_PWM_period -= RAMP_UP_SPEED;
-        }
-    } else{ left_wheel_PWM_period = state.left_wheel_target_period;}
-    
+        
     if (state.left_wheel_target_steps != 0){ //only run the following code if there is a non-zero step limit set
         state.left_wheel_num_completed_steps++;
         if(state.left_wheel_num_completed_steps >= state.left_wheel_target_steps){ //if left wheel has reached target number of steps
@@ -43,15 +38,6 @@ void __attribute__((interrupt, no_auto_psv)) _OC1Interrupt(void){
 //if wheel has reached it's target number of steps, turn off pwm and reset state
 void __attribute__((interrupt, no_auto_psv)) _OC2Interrupt(void){
     _OC2IF = 0;
-    
-    //check if period is within the step size (RAMP_UP_SPEED) of the target
-    if(right_wheel_PWM_period - state.right_wheel_target_period > RAMP_UP_SPEED){
-        if(right_wheel_PWM_period < state.right_wheel_target_period){
-            right_wheel_PWM_period += RAMP_UP_SPEED;
-        } else{
-            right_wheel_PWM_period -= RAMP_UP_SPEED;
-        }
-    } else {right_wheel_PWM_period = state.right_wheel_target_period;} 
     
     if (state.right_wheel_target_steps != 0){
         state.right_wheel_num_completed_steps++;
@@ -104,6 +90,8 @@ void __attribute__ ((interrupt, no_auto_psv)) _T3Interrupt(void){
         _T3IE = 0; //disable timer 2 interrupt until called again
     }
 }
+
+
 
 #endif	/* XC_HEADER_TEMPLATE_H */
 

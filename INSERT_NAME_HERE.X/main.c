@@ -7,6 +7,7 @@
 #include "AD_Config.h" //configure analog to digital conversions
 #include "PWM_config.h"
 #include "bucket_servo.h"
+#include "LEDs.h"
 
 //Oscillator setup
 #pragma config FNOSC = FRC //F_osc = 8MHz, F_cy = 4MHz 
@@ -24,16 +25,18 @@ void stateMachine(){
             }
             
             if(allQrdsOnLine()){//check if the robot ran into a T in the line
-                resetWheelsState();
+//                resetWheelsState();
+//                setLeftWheelVelocity(-BASE_WHEEL_VELOCITY);
+//                setRightWheelVelocity(-BASE_WHEEL_VELOCITY);
                 
-                //turn on both leds to signal state change
-                led_1_state = 1;
-                led_2_state = 1;
+                //turn on led to signal state change
+//                blinkLED1(3);
                 
-                state.state_num = 1;
+//                state.state_num = 30;
             } else if (allQRDsBlack()){ //check if the robot entered the canyon
-                initializeCanyonNavigation();
-                state.state_num = 10;
+//                blinkLED1(3);
+//                initializeCanyonNavigation();
+//                state.state_num = 10;
             }
             break;
         
@@ -140,13 +143,15 @@ int main(void) {
     //initialize a struct to hold the variables that define the state of the robot
     state = initializeState();
     
-    state.state_num = 0; 
+    state.state_num = 0;     
     
-    initializeLineFollowing();
+    setRightWheelVelocity(BASE_WHEEL_VELOCITY);
+    setLeftWheelVelocity(BASE_WHEEL_VELOCITY);
    
-        
+    
     while(1){
-        stateMachine();
+        updateWheelVelocity();
+//        stateMachine();
     }
     
     return 0;

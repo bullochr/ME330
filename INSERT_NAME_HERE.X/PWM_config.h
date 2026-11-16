@@ -36,8 +36,8 @@ void configurePWM(void){
     OC1CON2bits.OCTRIG = 0; //not sure what this does exactly
     OC2CON2bits.OCTRIG = 0;
     
-    left_wheel_PWM_period = BASE_WHEEL_PERIOD; //set the period of PWM on PIN 14 in clock cycles
-    right_wheel_PWM_period = BASE_WHEEL_PERIOD; //set the period of PWM on PIN 4 in clock cycles
+    left_wheel_PWM_period = 10000; //set the period of PWM on PIN 14 in clock cycles
+    right_wheel_PWM_period = 10000; //set the period of PWM on PIN 4 in clock cycles
     
     OC1R = BASE_WHEEL_PULSE_WIDTH; //set duty cycle
     OC2R = BASE_WHEEL_PULSE_WIDTH; 
