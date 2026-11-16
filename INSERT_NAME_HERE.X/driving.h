@@ -144,7 +144,7 @@ int getCorrectionFactor(void){
     //calculate signed error: a value between ... that describes how far from the line we are 
     float e_p = ((int)right_qrd_value - (int)left_qrd_value);
     
-    static int last_e_p = 0;
+    static float last_e_p = 0;
     static float e_i = 0;
     float elapsed_time = TMR1; //value in TMR1 is the elapsed time since last measurement
     TMR1 = 0; //reset TMR1, which measures the time between measurements
@@ -183,8 +183,12 @@ void initializeCanyonNavigation(void){
 //takes wheel velocity in steps/second, returns PWM period
 int velocityToPeriod(float vel){
     int period;
-    if(vel < 70.0){ //this will cause integer to overflow
+    if(vel < MIN_WHEEL_VELOCITY){ //integer will overflow without this
         period = 65000; //slowest value
+        
+    }else if(vel > MAX_WHEEL_VELOCITY){
+        period = CLOCK_FREQUENCY / MAX_WHEEL_VELOCITY;
+        
     }else{
         period = (CLOCK_FREQUENCY / vel);
     }
@@ -199,35 +203,35 @@ void updateWheelVelocity(){
     //LEFT WHEEL
     static char last_dir_left = 2;
     
+    led_1_state = 0;
+    led_2_state = 0;
+    
     //check if velocity is within the step size (RAMP_UP_SPEED) of the target
     if (state.left_wheel_velocity != state.left_wheel_target_velocity){
         if(abs(state.left_wheel_velocity - state.left_wheel_target_velocity) > RAMP_UP_SPEED){
             if(state.left_wheel_velocity < state.left_wheel_target_velocity){
                 state.left_wheel_velocity += RAMP_UP_SPEED;
+                led_1_state = 1;
             } else{
                 state.left_wheel_velocity -= RAMP_UP_SPEED;
+                led_2_state = 1;
             }
         } else{
-            state.left_wheel_velocity = state.left_wheel_target_velocity;
+//            state.left_wheel_velocity = state.left_wheel_target_velocity;
         }
         
+        if (state.left_wheel_velocity > MAX_WHEEL_VELOCITY){
+            state.left_wheel_velocity = MAX_WHEEL_VELOCITY;
+        } else if (state.left_wheel_velocity < -MAX_WHEEL_VELOCITY){
+            state.left_wheel_velocity = -MAX_WHEEL_VELOCITY;
+        }
         
         left_wheel_PWM_period = velocityToPeriod(abs(state.left_wheel_velocity));
         if (state.left_wheel_velocity > 0){
-            left_wheel_dir = 1;
+            left_wheel_dir = FORWARD;
         } else{
-            left_wheel_dir = 0;
+            left_wheel_dir = BACKWARD;
         }
-
-        //detect when left wheel changes direction (velocity changes sign)
-        if (last_dir_left != left_wheel_dir){
-            if(left_wheel_dir == 1){
-                left_wheel_dir = FORWARD;
-            } else{
-                left_wheel_dir = BACKWARD;
-            }
-        }
-        last_dir_left = left_wheel_dir;
     }
     
     
@@ -244,25 +248,21 @@ void updateWheelVelocity(){
                 state.right_wheel_velocity -= RAMP_UP_SPEED;
             }
         } else{
-            state.right_wheel_velocity = state.right_wheel_target_velocity;
+//            state.right_wheel_velocity = state.right_wheel_target_velocity;
         }
-    
+        
+        if (state.right_wheel_velocity > MAX_WHEEL_VELOCITY){
+            state.right_wheel_velocity = MAX_WHEEL_VELOCITY;
+        } else if (state.right_wheel_velocity < -MAX_WHEEL_VELOCITY){
+            state.right_wheel_velocity = -MAX_WHEEL_VELOCITY;
+        }
+        
         right_wheel_PWM_period = velocityToPeriod(abs(state.right_wheel_velocity));
         if (state.right_wheel_velocity > 0){
-            right_wheel_dir = 1;
+            right_wheel_dir = FORWARD;
         } else{
-            right_wheel_dir = 0;
+            right_wheel_dir = BACKWARD;
         }
-
-        //detect when wheel changes direction (velocity changes sign)
-        if (last_dir_right != right_wheel_dir){
-            if(right_wheel_dir == 1){
-                right_wheel_dir = FORWARD;
-            } else{
-                right_wheel_dir = BACKWARD;
-            }
-        }
-        last_dir_right = right_wheel_dir;
     }
 }
 

@@ -17,6 +17,10 @@
 int correction = 0;
 
 void stateMachine(){
+//    if (state.state_num != 0){ //use ramping function when changing speeds outside of line following
+        updateWheelVelocity();
+//    }
+    
     switch(state.state_num){
         case 0: //line following
             if (flags.ad_conversions_finished){
@@ -26,13 +30,13 @@ void stateMachine(){
             
             if(allQrdsOnLine()){//check if the robot ran into a T in the line
 //                resetWheelsState();
-//                setLeftWheelVelocity(-BASE_WHEEL_VELOCITY);
-//                setRightWheelVelocity(-BASE_WHEEL_VELOCITY);
+                setLeftWheelVelocity(BASE_WHEEL_VELOCITY);
+                setRightWheelVelocity(BASE_WHEEL_VELOCITY);
                 
                 //turn on led to signal state change
-//                blinkLED1(3);
+                blinkLED1(3);
                 
-//                state.state_num = 30;
+                state.state_num = 1;
             } else if (allQRDsBlack()){ //check if the robot entered the canyon
 //                blinkLED1(3);
 //                initializeCanyonNavigation();
@@ -150,8 +154,7 @@ int main(void) {
    
     
     while(1){
-        updateWheelVelocity();
-//        stateMachine();
+        stateMachine();
     }
     
     return 0;

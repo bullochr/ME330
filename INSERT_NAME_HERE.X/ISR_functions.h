@@ -15,9 +15,6 @@
 #include "state.h"
 #include "global_variables.h"
 
-int convertVelocityToPeriod(float vel) {
-    return (int)((MAX_WHEEL_VELOCITY + MIN_WHEEL_PERIOD) - abs(vel));
-}
 
 //left wheel completed one step, called on every PWM rising edge
 //if wheel has reached it's target number of steps, turn off pwm and reset state
