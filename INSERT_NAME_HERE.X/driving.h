@@ -21,27 +21,53 @@ int getNumSteps(int dist_mm){
     return (int)((abs(dist_mm) * (float)(STEPS_PER_REV / (PI * WHEEL_DIAMETER_MM))));
 }
 
+void setLeftWheelVelocity(float vel){
+    if (vel == 0){
+        left_wheel_PWM_state = PWM_OFF;
+        state.left_wheel_velocity = 0; //TODO: gradual braking to stop
+    } else{
+        left_wheel_PWM_state = PWM_ON;
+        if(vel > MAX_WHEEL_VELOCITY){
+            vel = MAX_WHEEL_VELOCITY;
+        }
+    }
+    state.left_wheel_target_velocity = vel;
+}
+
+void setRightWheelVelocity(float vel){
+    if (vel == 0){
+        right_wheel_PWM_state = PWM_OFF;
+        state.right_wheel_velocity = 0; //TODO: gradual braking to stop
+    } else{
+        right_wheel_PWM_state = PWM_ON;
+        if(vel > MAX_WHEEL_VELOCITY){
+            vel = MAX_WHEEL_VELOCITY;
+        }
+    }
+    state.right_wheel_target_velocity = vel;
+}
+
+
 void resetWheelsState(void){
     flags.right_wheel_reached_target = 0; //reset flag
     state.right_wheel_num_completed_steps = 0; //reset number of completed steps
     state.right_wheel_target_steps = 0; //reset target steps
-
+    state.right_wheel_target_velocity = BASE_WHEEL_VELOCITY;
+    
     flags.left_wheel_reached_target = 0; //reset flag
     state.left_wheel_num_completed_steps = 0; //reset number of completed steps
     state.left_wheel_target_steps = 0; //reset target steps
+    state.left_wheel_target_velocity = BASE_WHEEL_VELOCITY;
 }
 
 void RotateLeftWheelDistance(int dist_mm){
     int num_steps = getNumSteps(dist_mm); //calculate steps required to go desired distance
     if (dist_mm >= 0) {
-//        state.left_wheel_direction = 1;
-        _LATB8 = FORWARD; //forward
+        setLeftWheelVelocity(BASE_WHEEL_VELOCITY);
     }else{
-//        state.left_wheel_direction = -1;
-        _LATB8 = BACKWARD; //backward
+        setLeftWheelVelocity(-BASE_WHEEL_VELOCITY);
     }
-    state.left_wheel_target_steps = num_steps;
-    OC1CON1bits.OCM = 0b110; // ENABLE PWM on pin 14 (edge-aligned PWM pulses)
+    state.left_wheel_target_steps = abs(num_steps);
 }
 
 //takes a distance in mm, turns right wheel on in the direction specified by the
@@ -50,41 +76,34 @@ void RotateLeftWheelDistance(int dist_mm){
 void RotateRightWheelDistance(int dist_mm){
     int num_steps = getNumSteps(dist_mm); //calculate steps required to go desired distance
     if (dist_mm >= 0) {
-//        state.right_wheel_direction = 1;
-        _LATB9 = FORWARD; //forward
+        setRightWheelVelocity(BASE_WHEEL_VELOCITY);
     }else{
-//        state.right_wheel_direction = -1;
-        _LATB9 = BACKWARD; //backward
+        setRightWheelVelocity(-BASE_WHEEL_VELOCITY);
     }
     state.right_wheel_target_steps = abs(num_steps);
-    OC2CON1bits.OCM = 0b110; // ENABLE PWM on pin 14 (edge-aligned PWM pulses)
 }
 
 void driveForwardDistance(int dist_mm){
     int num_steps = getNumSteps(dist_mm);
-    _LATB8 = FORWARD; //Drive right wheel forward
-    _LATB9 = FORWARD; //Drive left wheel forward
+    setRightWheelVelocity(BASE_WHEEL_VELOCITY);
+    setLeftWheelVelocity(BASE_WHEEL_VELOCITY);
     
     state.right_wheel_target_steps = num_steps;
     state.left_wheel_target_steps = num_steps;
-    left_wheel_PWM_state = PWM_ON;
-    right_wheel_PWM_state = PWM_ON;
 }
 
 void driveBackwardDistance(int dist_mm){
     int num_steps = getNumSteps(dist_mm);
-    _LATB8 = BACKWARD; //Drive right wheel backward
-    _LATB9 = BACKWARD; //Drive right wheel backward
+    setRightWheelVelocity(-BASE_WHEEL_VELOCITY);
+    setLeftWheelVelocity(-BASE_WHEEL_VELOCITY);
     
     state.right_wheel_target_steps = num_steps;
     state.left_wheel_target_steps = num_steps;
-    left_wheel_PWM_state = PWM_ON;
-    right_wheel_PWM_state = PWM_ON;
 }
 
 //make a 90 degree turn. Pass a 1 to turn left, or a 0 to turn right
 void turn90Degrees(int turn_left){
-    int dist_mm = (int)(0.25*PI*ROBOT_WIDTH_MM) + 20; //calculates num_steps to travel 1/4 circumference of a circle with diam = ROBOT_WIDTH, with some buffer to account for skipping steps
+    int dist_mm = (int)(0.25*PI*ROBOT_WIDTH_MM); //calculates num_steps to travel 1/4 circumference of a circle with diam = ROBOT_WIDTH
     if(turn_left){ //rotate wheels equally in opposing directions
         RotateLeftWheelDistance(-dist_mm);
         RotateRightWheelDistance(dist_mm); 
@@ -94,89 +113,156 @@ void turn90Degrees(int turn_left){
     }
 }
 
-void initializeLineFollowing(void){
-    _LATB8 = FORWARD; //Drive right wheel forward
-    _LATB9 = FORWARD; //Drive left wheel forward
-    
+void initializeLineFollowing(void){    
     //clear target step values
     state.right_wheel_target_steps = 0;
     state.left_wheel_target_steps = 0;
     
-    //enable PWM on both wheels
-    left_wheel_PWM_state = PWM_ON;
-    right_wheel_PWM_state = PWM_ON;
+    setLeftWheelVelocity(BASE_WHEEL_VELOCITY);
+    setRightWheelVelocity(BASE_WHEEL_VELOCITY);
 }
 
-char allQrdsOnLine(void){
-    return (left_qrd_value > WHITE_THRESHOLD && center_qrd_value > WHITE_THRESHOLD && right_qrd_value > WHITE_THRESHOLD);
+char allQrdsWhite(void){
+    return (left_qrd_value < WHITE_THRESHOLD && center_qrd_value < CENTER_QRD_WHITE_THRESHOLD && right_qrd_value < WHITE_THRESHOLD);
+}
+
+char allQrdsBlack(void){
+    return (left_qrd_value > BLACK_THRESHOLD && center_qrd_value > CENTER_QRD_BLACK_THRESHOLD && right_qrd_value > BLACK_THRESHOLD);
+}
+
+char bothWheelsFinished(){
+    if (flags.left_wheel_reached_target && flags.right_wheel_reached_target){
+        resetWheelsState();
+        return 1;
+    } else{
+        return 0;
+    }
 }
 
 int getCorrectionFactor(void){
     //calculate signed error: a value between ... that describes how far from the line we are 
-    int e_p = ((int)right_qrd_value - (int)left_qrd_value);
+    float e_p = ((int)right_qrd_value - (int)left_qrd_value);
     
-    static int last_e_p = 0;
-    static int e_i = 0;
+    static float last_e_p = 0;
+    static float e_i = 0;
+    float elapsed_time = TMR1; //value in TMR1 is the elapsed time since last measurement
+    TMR1 = 0; //reset TMR1, which measures the time between measurements
     
     //add error to accumulated error
-    e_i = e_i + e_p;
+    e_i = e_i + (e_p * elapsed_time);
+    if (e_i > MAX_INTEGRAL_VALUE){e_i = MAX_INTEGRAL_VALUE;} 
+    else if (e_i < -MAX_INTEGRAL_VALUE){e_i = -MAX_INTEGRAL_VALUE;}
     
     //find rate of change of error since last loop
-    int e_d = e_p - last_e_p;
+    float e_d = (e_p - last_e_p) / elapsed_time;
     
     last_e_p = e_p;
     
-    int correction = e_p * KP;
-    if (correction > MAX_CORRECTION_VALUE){
-        correction = MAX_CORRECTION_VALUE;
-        led_1_state = 1;
-    }else{
-        led_1_state = 0;
-    }
-    if (correction < (-1 * MAX_CORRECTION_VALUE)){
-        correction = -1 * MAX_CORRECTION_VALUE;
-        led_2_state = 1;
-    }else{
-        led_2_state = 0;
-    }
+    int correction = (e_p * KP) + (e_i * KI) + (e_d * KD);
     return correction;
 }
 
-void CanyonTurnRight(){
-    int dist_mm = (int)(0.25*PI*ROBOT_WIDTH_MM) + 20;
-    int num_steps = getNumSteps(dist_mm);
-    int x = 0;
-    while (x < num_steps)
-        x++;
-        
-    state.right_wheel_target_steps = num_steps;
-    _OC1IF = 1;
-}
+void followLine(){
+    int correction = getCorrectionFactor();
+//    int slow_down_factor = correction * SLOW_DOWN_COEFFICIENT;
+    int slow_down_factor = 0;
+    
+    int left_velocity = BASE_WHEEL_VELOCITY + correction - slow_down_factor;
+    int right_velocity = BASE_WHEEL_VELOCITY - correction - slow_down_factor;
 
-void CanyonTurnLeft(){  
-    int dist_mm = (int)(0.25*PI*ROBOT_WIDTH_MM) + 20;
-    int num_steps = getNumSteps(dist_mm);
-    state.left_wheel_target_steps = num_steps;
-    _OC1IF = 1;
+    //apply correction factor to wheel speeds
+    setRightWheelVelocity(right_velocity);
+    setLeftWheelVelocity(left_velocity);
 }
-
-void CanyonDriveForward(int dist_mm){
-    int num_steps = getNumSteps(dist_mm);
-    _LATB8 = FORWARD; //Drive right wheel forward
-    _LATB9 = FORWARD; //Drive left wheel forward
-    int x = 0;
-    while (x < num_steps){
-        state.right_wheel_target_steps = num_steps;
-        state.left_wheel_target_steps = num_steps;
-        left_wheel_PWM_state = PWM_ON;
-        right_wheel_PWM_state = PWM_ON;
-        x++;
-    }
-}
-
 
 void initializeCanyonNavigation(void){
-    CanyonDriveForward(610);
+    driveForwardDistance(610);
+}
+
+//takes wheel velocity in steps/second, returns PWM period
+int velocityToPeriod(float vel){
+    int period;
+    if(vel < MIN_WHEEL_VELOCITY){ //integer will overflow without this
+        period = 65000; //slowest value
+        
+    }else if(vel > MAX_WHEEL_VELOCITY){
+        period = CLOCK_FREQUENCY / MAX_WHEEL_VELOCITY;
+        
+    }else{
+        period = (CLOCK_FREQUENCY / vel);
+    }
+    return period;
+}
+
+//float periodToVelocity(int period){
+//    return CLOCK_FREQUENCY / period;
+//}
+
+void updateWheelVelocity(){
+    //LEFT WHEEL
+    static char last_dir_left = 2;
+    
+//    led_1_state = 0;
+//    led_2_state = 0;
+    
+    //check if velocity is within the step size (RAMP_UP_SPEED) of the target
+    if (state.left_wheel_velocity != state.left_wheel_target_velocity){
+        if(abs(state.left_wheel_velocity - state.left_wheel_target_velocity) > RAMP_UP_SPEED){
+            if(state.left_wheel_velocity < state.left_wheel_target_velocity){
+                state.left_wheel_velocity += RAMP_UP_SPEED;
+//                led_1_state = 1;
+            } else{
+                state.left_wheel_velocity -= RAMP_UP_SPEED;
+//                led_2_state = 1;
+            }
+        } else{
+//            state.left_wheel_velocity = state.left_wheel_target_velocity;
+        }
+        
+        if (state.left_wheel_velocity > MAX_WHEEL_VELOCITY){
+            state.left_wheel_velocity = MAX_WHEEL_VELOCITY;
+        } else if (state.left_wheel_velocity < -MAX_WHEEL_VELOCITY){
+            state.left_wheel_velocity = -MAX_WHEEL_VELOCITY;
+        }
+        
+        left_wheel_PWM_period = velocityToPeriod(abs(state.left_wheel_velocity));
+        if (state.left_wheel_velocity > 0){
+            left_wheel_dir = FORWARD;
+        } else{
+            left_wheel_dir = BACKWARD;
+        }
+    }
+    
+    
+    //RIGHT WHEEL
+    static char last_dir_right = 2;
+    
+    //check if velocity is within the step size (RAMP_UP_SPEED) of the target
+    if (state.right_wheel_velocity != state.right_wheel_target_velocity){
+        
+        if(abs(state.right_wheel_velocity - state.right_wheel_target_velocity) > RAMP_UP_SPEED){
+            if(state.right_wheel_velocity < state.right_wheel_target_velocity){
+                state.right_wheel_velocity += RAMP_UP_SPEED;
+            } else{
+                state.right_wheel_velocity -= RAMP_UP_SPEED;
+            }
+        } else{
+//            state.right_wheel_velocity = state.right_wheel_target_velocity;
+        }
+        
+        if (state.right_wheel_velocity > MAX_WHEEL_VELOCITY){
+            state.right_wheel_velocity = MAX_WHEEL_VELOCITY;
+        } else if (state.right_wheel_velocity < -MAX_WHEEL_VELOCITY){
+            state.right_wheel_velocity = -MAX_WHEEL_VELOCITY;
+        }
+        
+        right_wheel_PWM_period = velocityToPeriod(abs(state.right_wheel_velocity));
+        if (state.right_wheel_velocity > 0){
+            right_wheel_dir = FORWARD;
+        } else{
+            right_wheel_dir = BACKWARD;
+        }
+    }
 }
 
 #endif	/* driving */

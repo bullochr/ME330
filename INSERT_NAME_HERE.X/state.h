@@ -10,26 +10,25 @@
 struct stateStruct{
     int state_num; 
         //state 0 - line following
-            //state 1 - Milestone 5: basic motion
-        //state 10 - collect sample
-        //state 20 - navigate canyon
+        //state 10 - navigate canyon
+        //state 20 - collect sample
         //state 30 - data transmission
-    float left_line_sensor;
-    float right_line_sensor;
-    float front_dist_sensor;
-    float left_dist_sensor;
-    float right_dist_sensor;
-    float is_laser_on;
-    float top_satellite_sensor;
-    float bottom_satellite_sensor;
+    
+    //LEDs
+    int led_1_num_blinks;
+    int led_1_target_num_blinks;
+    int led_2_num_blinks;
+    int led_2_target_num_blinks;
     
     //wheel state
     int left_wheel_target_steps;
     int right_wheel_target_steps;
-    int left_wheel_direction; //1 is forward, -1 is backward
-    int right_wheel_direction; //1 is forward, -1 is backward
     int left_wheel_num_completed_steps;
     int right_wheel_num_completed_steps;
+    float left_wheel_velocity;
+    float right_wheel_velocity;
+    float left_wheel_target_velocity; //target speed, actual speed approaches this in ramping up
+    float right_wheel_target_velocity;
 };
 
 //contains custom flag states
@@ -48,21 +47,21 @@ struct flagStruct flags;
 //fills state with default values, then returns filled state_var
 struct stateStruct initializeState(void){
     state.state_num = 0;
-    state.left_line_sensor = 0;;
-    state.right_line_sensor = 0;
-    state.front_dist_sensor = 0;
-    state.left_dist_sensor = 0;
-    state.right_dist_sensor = 0;
-    state.is_laser_on = 0;
-    state.top_satellite_sensor = 0;
-    state.bottom_satellite_sensor = 0;
+    
+    state.led_1_num_blinks = 0;
+    state.led_1_target_num_blinks = 0;
+    state.led_2_num_blinks = 0;
+    state.led_2_target_num_blinks = 0;
     
     state.left_wheel_target_steps = 0;
     state.right_wheel_target_steps = 0;
-    state.left_wheel_direction = 0;
-    state.right_wheel_direction = 0;
     state.left_wheel_num_completed_steps = 0;
     state.right_wheel_num_completed_steps = 0;
+    state.left_wheel_target_velocity = 0.0;
+    state.right_wheel_target_velocity = 0.0;
+    state.left_wheel_velocity = 0.0;
+    state.right_wheel_velocity = 0.0;
+    
     
     return state;
 }

@@ -7,6 +7,7 @@
 #include "AD_Config.h" //configure analog to digital conversions
 #include "PWM_config.h"
 #include "bucket_servo.h"
+#include "LEDs.h"
 
 //Oscillator setup
 #pragma config FNOSC = FRC //F_osc = 8MHz, F_cy = 4MHz 
@@ -16,56 +17,66 @@
 int correction = 0;
 
 void stateMachine(){
+//    if (state.state_num != 0){ //use ramping function when changing speeds outside of line following
+    updateWheelVelocity();
+//    }
+    
     switch(state.state_num){
         case 0: //line following
-//            left_wheel_PWM_period = BASE_WHEEL_SPEED - center_qrd_value;
-//            right_wheel_PWM_period = BASE_WHEEL_SPEED + center_qrd_value;
+            led_2_state = 0;
             if (flags.ad_conversions_finished){
                 flags.ad_conversions_finished = 0;
-                int correction = getCorrectionFactor();
+                followLine();
                 
-                //apply correction factor to wheel speeds
-                left_wheel_PWM_period = BASE_WHEEL_PERIOD - correction;
-                right_wheel_PWM_period = BASE_WHEEL_PERIOD + correction;
+                led_2_state = 1;
             }
             
-//            if(allQrdsOnLine()){//check if the robot ran into a T in the line
-//                //transition to state 1
-//                driveForwardDistance(DIST_AXLE_TO_QRDS + (LINE_WIDTH / 2));//forward until axle is over the line
-//                state.state_num = 1;
-//            }
-            break;
-            
-        case 1: // Ran perpendicular into the line, or a T in the line
-            if(flags.left_wheel_reached_target && flags.right_wheel_reached_target){
-                resetWheelsState();
-                turn90Degrees(1); //turn left 90 degrees to align with the line
+            if(allQrdsWhite()){//check if the robot ran into a T in the line
+                flags.left_wheel_reached_target = 0;
+                flags.right_wheel_reached_target = 0;
+                driveForwardDistance(DIST_AXLE_TO_QRDS + LINE_WIDTH);
+                
+                //turn on led to signal state change
+                blinkLED1(3);
+                
                 state.state_num = 2;
+                
+            } else if (allQrdsBlack()){ //check if the robot entered the canyon
+                blinkLED2(2);
+                initializeCanyonNavigation();
+                state.state_num = 10;
             }
             break;
             
-        case 2:
-            if(center_qrd_value < WHITE_THRESHOLD){//check if the center qrd is on the line
-                resetWheelsState();
-                state.state_num = 0; //back to line following
-            } else if (flags.left_wheel_reached_target && flags.right_wheel_reached_target){ //if finished 90 degrees and still didnt intersect line
-                resetWheelsState();
-                turn90Degrees(1); //keep turning left
+        case 2: //wait until finished driving before turning
+            if(bothWheelsFinished()){
+                if (right_sharp_value > RIGHT_SHARP_THRESH_DIST && left_sharp_value < LEFT_SHARP_THRESH_DIST){
+                    blinkLED1(1);
+                    turn90Degrees(1);
+                    
+                } else{
+                    blinkLED2(1);
+                    turn90Degrees(0);
+                }    
+                state.state_num = 3;
+            }
+            break;
+            
+        case 3: 
+//            if(center_qrd_value < CENTER_QRD_WHITE_THRESHOLD){
+            if (bothWheelsFinished()){
+                blinkLED2(2);
+                initializeLineFollowing();
+                state.state_num = 0;
             }
             break;
             
         case 10: //Canyon Forward 
-            if (allQrdsOnLine()){
-                if (right_sharp_value > RIGHT_SHARP_THRESH_DIST){
-                    turn90Degrees(1);
-                    state.state_num = 20;
-                }else{
-                    turn90Degrees(0);
-                    state.state_num = 20;
-                }
+            if (allQrdsWhite()){
+                driveForwardDistance(DIST_AXLE_TO_QRDS + LINE_WIDTH);
+                state.state_num = 2;
             }
-            if (flags.left_wheel_reached_target && flags.right_wheel_reached_target){
-                resetWheelsState();
+            if (bothWheelsFinished()){
                 if (right_sharp_value > RIGHT_SHARP_THRESH_DIST && left_sharp_value < LEFT_SHARP_THRESH_DIST){
                     led_1_state = 1;
                     led_2_state = 0;
@@ -82,54 +93,17 @@ void stateMachine(){
                     driveForwardDistance(610);
                     state.state_num = 10;
                 }
-            }
-                
-//            if (left_sharp_value > LEFT_SHARP_THRESH_DIST && right_sharp_value > RIGHT_SHARP_THRESH_DIST){
-//                resetWheelsState();
-//                led_1_state = 1;
-//                led_2_state = 1;
-//                CanyonDriveForward(300);
-//            } else if (right_sharp_value > RIGHT_SHARP_THRESH_DIST && left_sharp_value < LEFT_SHARP_THRESH_DIST){
-//                resetWheelsState();
-//                turn90Degrees(1);
-//                led_1_state = 1;
-//                led_2_state = 0;
-//                CanyonDriveForward(300);
-//            } else if (right_sharp_value < RIGHT_SHARP_THRESH_DIST && left_sharp_value > LEFT_SHARP_THRESH_DIST){
-//                resetWheelsState();
-//                turn90Degrees(0);
-//                led_1_state = 0;
-//                led_2_state = 1;
-//                CanyonDriveForward(300);
-//            }
-////            if(center_qrd_value < WHITE_THRESHOLD){
-//                initializeLineFollowing();
-//            }           
+            }      
             break;
             
         case 11: //Canyon Turn
-            if (flags.left_wheel_reached_target && flags.right_wheel_reached_target){
-                resetWheelsState();
+            if (bothWheelsFinished()){
                 driveForwardDistance(610);
                 state.state_num = 10;
             }
         
-        case 20://New Testing Code State
-//          reset outputs to test
-//            led_1_state = 0;
-//            led_2_state = 0;
-//            laser_state = 0;
-//            servo_pulse_width = 0;
-//            
-            //            if (satellite_sensor_value > 2000){
-//                laser_state = 1;
-//            } 
-//            if (ball_qrd_value < 2000){
-//                servo_pulse_width = SERVO_PWM_PERIOD / 2;
-//            }
-//            if (sample_collection_IR > 2000){
-//                servo_pulse_width = SERVO_PWM_PERIOD;
-//            }
+        case 20://
+
             break;
             
         case 30:
@@ -153,20 +127,24 @@ int main(void) {
     configureAD();
     configurePWM();
     
+    T1CONbits.TON = 1;
+    T1CONbits.TCS = 0;
+    T1CONbits.TCKPS = 0;
+    TMR1 = 0;
+    
     //initialize a struct to hold the states of each custom flag
     flags = initializeFlags();
     
     //initialize a struct to hold the variables that define the state of the robot
-//    state = initializeState();
+    state = initializeState();
     
-    state.state_num = 10; 
+    state.state_num = 0;     
     
-//    initializeLineFollowing();
-    initializeCanyonNavigation();
-        
-//    laser_state = 1;
+    setRightWheelVelocity(BASE_WHEEL_VELOCITY);
+    setLeftWheelVelocity(BASE_WHEEL_VELOCITY);
+   
+    
     while(1){
-//        updateState();
         stateMachine();
     }
     
