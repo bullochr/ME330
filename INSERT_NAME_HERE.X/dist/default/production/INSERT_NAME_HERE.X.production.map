@@ -109,11 +109,11 @@ Default Scalar Model: Small
 section                    address   length (PC units)   length (bytes) (dec)
 -------                    -------   -----------------   --------------------
 .text                        0x200               0xa16           0xf21  (3873)
-.const                       0xc16                0x4e            0x75  (117)
-.text                        0xc64               0xa96           0xfe1  (4065)
-.dinit                      0x16fa                0x16            0x21  (33)
+.const                       0xc16                0x56            0x81  (129)
+.text                        0xc6c               0xa7e           0xfbd  (4029)
+.dinit                      0x16ea                0x16            0x21  (33)
 
-                 Total "program" memory used (bytes):         0x1f98  (8088) 50%
+                 Total "program" memory used (bytes):         0x1f80  (8064) 50%
 
 
 "data" Memory  [Origin = 0x800, Length = 0x800]
@@ -173,15 +173,15 @@ External Symbols in Program Memory (by address):
                   0x00042a                  ___floatunsisf
                   0x00042e                  ___nesf2
                   0x000432                  __funpack
-                  0x00045c                  ___subsf3
                   0x00045c                  ___subsf3x
-                  0x00046e                  ___addsf3x
+                  0x00045c                  ___subsf3
                   0x00046e                  ___addsf3
+                  0x00046e                  ___addsf3x
                   0x000638                  ___divsf3x
                   0x000638                  ___divsf3
                   0x0007ca                  __sdivf
-                  0x0007f6                  ___mulsf3
                   0x0007f6                  ___mulsf3x
+                  0x0007f6                  ___mulsf3
                   0x000902                  __dnrmpackf
                   0x000956                  __unpackdnrmf
                   0x0009b4                  __typef
@@ -201,86 +201,92 @@ External Symbols in Program Memory (by address):
                   0x000c26                  _FRONT_SHARP_THRESH_DIST
                   0x000c28                  _LEFT_SHARP_THRESH_DIST
                   0x000c2a                  _RIGHT_SHARP_THRESH_DIST
-                  0x000c2c                  _BASE_WHEEL_VELOCITY
-                  0x000c30                  _KP
-                  0x000c34                  _KI
-                  0x000c38                  _KD
-                  0x000c3c                  _SLOW_DOWN_COEFFICIENT
-                  0x000c40                  _RAMP_UP_SPEED
-                  0x000c44                  _FORWARD
-                  0x000c46                  _BACKWARD
-                  0x000c48                  _MAX_WHEEL_VELOCITY
-                  0x000c4c                  _MIN_WHEEL_VELOCITY
-                  0x000c50                  _MAX_INTEGRAL_VALUE
-                  0x000c52                  _BASE_WHEEL_PULSE_WIDTH
-                  0x000c54                  _CLOCK_FREQUENCY
-                  0x000c58                  _PWM_OFF
-                  0x000c5a                  _PWM_ON
-                  0x000c5c                  _WHITE_THRESHOLD
-                  0x000c5e                  _BLACK_THRESHOLD
-                  0x000c60                  _DIST_AXLE_TO_QRDS
-                  0x000c62                  _CENTER_QRD_WHITE_THRESHOLD
-                  0x000c64                  _initializeState
-                  0x000ca0                  _initializeFlags
-                  0x000cb6                  _getNumSteps
-                  0x000cf8                  _setLeftWheelVelocity
-                  0x000d60                  _setRightWheelVelocity
-                  0x000dc8                  _resetWheelsState
-                  0x000dea                  _RotateLeftWheelDistance
-                  0x000e16                  _RotateRightWheelDistance
-                  0x000e42                  _driveForwardDistance
-                  0x000e64                  _driveBackwardDistance
-                  0x000e8a                  _turn90Degrees
-                  0x000ec6                  _initializeLineFollowing
-                  0x000edc                  _allQrdsOnLine
-                  0x000f08                  _allQRDsBlack
-                  0x000f34                  _bothWheelsFinished
-                  0x000f4e                  _getCorrectionFactor
-                  0x001030                  _followLine
-                  0x001098                  _initializeCanyonNavigation
-                  0x0010a2                  _velocityToPeriod
-                  0x00110a                  _updateWheelVelocity
-                  0x00135c                  _configurePins
-                  0x00139c                  _configureAD
-                  0x001414                  _configurePWM
-                  0x0014da                  _setServoAngle
-                  0x0014fa                  _blinkLED1
-                  0x00152e                  _blinkLED2
-                  0x001562                  _stateMachine
-                  0x0016b2                  _updateState
-                  0x0016b8                  _main
+                  0x000c2c                  _FORWARD
+                  0x000c2e                  _BACKWARD
+                  0x000c30                  _MAX_WHEEL_VELOCITY
+                  0x000c34                  _MIN_WHEEL_VELOCITY
+                  0x000c38                  _MAX_INTEGRAL_VALUE
+                  0x000c3a                  _BASE_WHEEL_PULSE_WIDTH
+                  0x000c3c                  _CLOCK_FREQUENCY
+                  0x000c40                  _PWM_OFF
+                  0x000c42                  _PWM_ON
+                  0x000c44                  _WHITE_THRESHOLD
+                  0x000c46                  _BLACK_THRESHOLD
+                  0x000c48                  _CENTER_QRD_WHITE_THRESHOLD
+                  0x000c4a                  _CENTER_QRD_BLACK_THRESHOLD
+                  0x000c4c                  _LINE_WIDTH
+                  0x000c4e                  _DIST_AXLE_TO_QRDS
+                  0x000c50                  _BASE_WHEEL_VELOCITY
+                  0x000c54                  _SLOW_WHEEL_VELOCITY
+                  0x000c58                  _KP
+                  0x000c5c                  _KI
+                  0x000c60                  _KD
+                  0x000c64                  _SLOW_DOWN_COEFFICIENT
+                  0x000c68                  _RAMP_UP_SPEED
+                  0x000c6c                  _initializeState
+                  0x000ca8                  _initializeFlags
+                  0x000cbe                  _getNumSteps
+                  0x000d00                  _setLeftWheelVelocity
+                  0x000d68                  _setRightWheelVelocity
+                  0x000dd0                  _resetWheelsState
+                  0x000df2                  _RotateLeftWheelDistance
+                  0x000e1e                  _RotateRightWheelDistance
+                  0x000e4a                  _driveForwardDistance
+                  0x000e6c                  _driveBackwardDistance
+                  0x000e92                  _turn90Degrees
+                  0x000ecc                  _initializeLineFollowing
+                  0x000ee2                  _allQrdsWhite
+                  0x000f0e                  _allQrdsBlack
+                  0x000f3a                  _bothWheelsFinished
+                  0x000f54                  _getCorrectionFactor
+                  0x001036                  _followLine
+                  0x00109e                  _initializeCanyonNavigation
+                  0x0010a8                  _velocityToPeriod
+                  0x001110                  _updateWheelVelocity
+                  0x00135a                  _configurePins
+                  0x00139a                  _configureAD
+                  0x001412                  _configurePWM
+                  0x0014d8                  _setServoAngle
+                  0x0014f8                  _blinkLED1
+                  0x00152c                  _blinkLED2
+                  0x001560                  _stateMachine
+                  0x0016a2                  _updateState
+                  0x0016a8                  _main
 
 External Symbols in Program Memory (by name):
 
-                  0x000c46                  _BACKWARD
-                  0x000c52                  _BASE_WHEEL_PULSE_WIDTH
-                  0x000c2c                  _BASE_WHEEL_VELOCITY
-                  0x000c5e                  _BLACK_THRESHOLD
-                  0x000c62                  _CENTER_QRD_WHITE_THRESHOLD
-                  0x000c54                  _CLOCK_FREQUENCY
-                  0x000c60                  _DIST_AXLE_TO_QRDS
-                  0x000c44                  _FORWARD
+                  0x000c2e                  _BACKWARD
+                  0x000c3a                  _BASE_WHEEL_PULSE_WIDTH
+                  0x000c50                  _BASE_WHEEL_VELOCITY
+                  0x000c46                  _BLACK_THRESHOLD
+                  0x000c4a                  _CENTER_QRD_BLACK_THRESHOLD
+                  0x000c48                  _CENTER_QRD_WHITE_THRESHOLD
+                  0x000c3c                  _CLOCK_FREQUENCY
+                  0x000c4e                  _DIST_AXLE_TO_QRDS
+                  0x000c2c                  _FORWARD
                   0x000c26                  _FRONT_SHARP_THRESH_DIST
-                  0x000c38                  _KD
-                  0x000c34                  _KI
-                  0x000c30                  _KP
+                  0x000c60                  _KD
+                  0x000c5c                  _KI
+                  0x000c58                  _KP
                   0x000c28                  _LEFT_SHARP_THRESH_DIST
-                  0x000c50                  _MAX_INTEGRAL_VALUE
-                  0x000c48                  _MAX_WHEEL_VELOCITY
-                  0x000c4c                  _MIN_WHEEL_VELOCITY
+                  0x000c4c                  _LINE_WIDTH
+                  0x000c38                  _MAX_INTEGRAL_VALUE
+                  0x000c30                  _MAX_WHEEL_VELOCITY
+                  0x000c34                  _MIN_WHEEL_VELOCITY
                   0x000c1c                  _PI
-                  0x000c58                  _PWM_OFF
-                  0x000c5a                  _PWM_ON
-                  0x000c40                  _RAMP_UP_SPEED
+                  0x000c40                  _PWM_OFF
+                  0x000c42                  _PWM_ON
+                  0x000c68                  _RAMP_UP_SPEED
                   0x000c2a                  _RIGHT_SHARP_THRESH_DIST
                   0x000c20                  _ROBOT_WIDTH_MM
-                  0x000dea                  _RotateLeftWheelDistance
-                  0x000e16                  _RotateRightWheelDistance
+                  0x000df2                  _RotateLeftWheelDistance
+                  0x000e1e                  _RotateRightWheelDistance
                   0x000c24                  _SERVO_PWM_PERIOD
-                  0x000c3c                  _SLOW_DOWN_COEFFICIENT
+                  0x000c64                  _SLOW_DOWN_COEFFICIENT
+                  0x000c54                  _SLOW_WHEEL_VELOCITY
                   0x000c1a                  _STEPS_PER_REV
                   0x000c16                  _WHEEL_DIAMETER_MM
-                  0x000c5c                  _WHITE_THRESHOLD
+                  0x000c44                  _WHITE_THRESHOLD
                   0x000340                  __ADC1Interrupt
                   0x0003d4                  __DefaultInterrupt
                   0x0002c8                  __OC1Interrupt
@@ -321,33 +327,33 @@ External Symbols in Program Memory (by name):
                   0x0009b4                  __typef
                   0x000956                  __unpackdnrmf
                   0x000aa0                  __unpackf
-                  0x000f08                  _allQRDsBlack
-                  0x000edc                  _allQrdsOnLine
-                  0x0014fa                  _blinkLED1
-                  0x00152e                  _blinkLED2
-                  0x000f34                  _bothWheelsFinished
-                  0x00139c                  _configureAD
-                  0x001414                  _configurePWM
-                  0x00135c                  _configurePins
-                  0x000e64                  _driveBackwardDistance
-                  0x000e42                  _driveForwardDistance
-                  0x001030                  _followLine
-                  0x000f4e                  _getCorrectionFactor
-                  0x000cb6                  _getNumSteps
-                  0x001098                  _initializeCanyonNavigation
-                  0x000ca0                  _initializeFlags
-                  0x000ec6                  _initializeLineFollowing
-                  0x000c64                  _initializeState
-                  0x0016b8                  _main
-                  0x000dc8                  _resetWheelsState
-                  0x000cf8                  _setLeftWheelVelocity
-                  0x000d60                  _setRightWheelVelocity
-                  0x0014da                  _setServoAngle
-                  0x001562                  _stateMachine
-                  0x000e8a                  _turn90Degrees
-                  0x0016b2                  _updateState
-                  0x00110a                  _updateWheelVelocity
-                  0x0010a2                  _velocityToPeriod
+                  0x000f0e                  _allQrdsBlack
+                  0x000ee2                  _allQrdsWhite
+                  0x0014f8                  _blinkLED1
+                  0x00152c                  _blinkLED2
+                  0x000f3a                  _bothWheelsFinished
+                  0x00139a                  _configureAD
+                  0x001412                  _configurePWM
+                  0x00135a                  _configurePins
+                  0x000e6c                  _driveBackwardDistance
+                  0x000e4a                  _driveForwardDistance
+                  0x001036                  _followLine
+                  0x000f54                  _getCorrectionFactor
+                  0x000cbe                  _getNumSteps
+                  0x00109e                  _initializeCanyonNavigation
+                  0x000ca8                  _initializeFlags
+                  0x000ecc                  _initializeLineFollowing
+                  0x000c6c                  _initializeState
+                  0x0016a8                  _main
+                  0x000dd0                  _resetWheelsState
+                  0x000d00                  _setLeftWheelVelocity
+                  0x000d68                  _setRightWheelVelocity
+                  0x0014d8                  _setServoAngle
+                  0x001560                  _stateMachine
+                  0x000e92                  _turn90Degrees
+                  0x0016a2                  _updateState
+                  0x001110                  _updateWheelVelocity
+                  0x0010a8                  _velocityToPeriod
 
 Memory Configuration
 
@@ -515,30 +521,30 @@ __FDS
 .comment
  *(.comment)
 
-.debug_info       0x000000       0x4478
+.debug_info       0x000000       0x44d7
  *(.debug_info)
- .debug_info      0x000000       0x3847 build/default/production/main.o
- .debug_info      0x003847         0x8d c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(feqltle.XX_o)
- .debug_info      0x0038d4         0x8b c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(fgtge.XX_o)
- .debug_info      0x00395f         0x8d c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(fixsfsi.XX_o)
- .debug_info      0x0039ec         0x8f c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(floatsisf.XX_o)
- .debug_info      0x003a7b         0x91 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(floatunsisf.XX_o)
- .debug_info      0x003b0c         0x89 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(fne.XX_o)
- .debug_info      0x003b95         0x8d c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(funpack.XX_o)
- .debug_info      0x003c22         0x9d c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(addsf3x.XX_o)
- .debug_info      0x003cbf         0x9d c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(divsf3x.XX_o)
- .debug_info      0x003d5c         0x9d c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(mulsf3x.XX_o)
- .debug_info      0x003df9         0xa0 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(dnrmpackfx.XX_o)
- .debug_info      0x003e99         0xa2 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(unpackdnrmfx.XX_o)
- .debug_info      0x003f3b         0x9c c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(typefx.XX_o)
- .debug_info      0x003fd7         0x9f c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(propnanfx.XX_o)
- .debug_info      0x004076         0x9d c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(spackfx.XX_o)
- .debug_info      0x004113         0x9e c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(unpackfx.XX_o)
- .debug_info      0x0041b1         0x8e c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(fcompare.XX_o)
- .debug_info      0x00423f         0x8f c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(floatdisf.XX_o)
- .debug_info      0x0042ce         0x91 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(floatundisf.XX_o)
- .debug_info      0x00435f         0x8b c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(fpack.XX_o)
- .debug_info      0x0043ea         0x8e c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(funpack2.XX_o)
+ .debug_info      0x000000       0x38a6 build/default/production/main.o
+ .debug_info      0x0038a6         0x8d c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(feqltle.XX_o)
+ .debug_info      0x003933         0x8b c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(fgtge.XX_o)
+ .debug_info      0x0039be         0x8d c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(fixsfsi.XX_o)
+ .debug_info      0x003a4b         0x8f c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(floatsisf.XX_o)
+ .debug_info      0x003ada         0x91 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(floatunsisf.XX_o)
+ .debug_info      0x003b6b         0x89 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(fne.XX_o)
+ .debug_info      0x003bf4         0x8d c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(funpack.XX_o)
+ .debug_info      0x003c81         0x9d c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(addsf3x.XX_o)
+ .debug_info      0x003d1e         0x9d c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(divsf3x.XX_o)
+ .debug_info      0x003dbb         0x9d c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(mulsf3x.XX_o)
+ .debug_info      0x003e58         0xa0 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(dnrmpackfx.XX_o)
+ .debug_info      0x003ef8         0xa2 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(unpackdnrmfx.XX_o)
+ .debug_info      0x003f9a         0x9c c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(typefx.XX_o)
+ .debug_info      0x004036         0x9f c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(propnanfx.XX_o)
+ .debug_info      0x0040d5         0x9d c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(spackfx.XX_o)
+ .debug_info      0x004172         0x9e c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(unpackfx.XX_o)
+ .debug_info      0x004210         0x8e c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(fcompare.XX_o)
+ .debug_info      0x00429e         0x8f c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(floatdisf.XX_o)
+ .debug_info      0x00432d         0x91 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(floatundisf.XX_o)
+ .debug_info      0x0043be         0x8b c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(fpack.XX_o)
+ .debug_info      0x004449         0x8e c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(funpack2.XX_o)
  *(.gnu.linkonce.wi.*)
 
 .debug_abbrev     0x000000        0x3a7
@@ -566,39 +572,39 @@ __FDS
  .debug_abbrev    0x00037f         0x14 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(fpack.XX_o)
  .debug_abbrev    0x000393         0x14 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(funpack2.XX_o)
 
-.debug_line       0x000000        0xd02
+.debug_line       0x000000        0xcfd
  *(.debug_line)
- .debug_line      0x000000        0x3c4 build/default/production/main.o
- .debug_line      0x0003c4         0x37 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(feqltle.XX_o)
- .debug_line      0x0003fb         0x35 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(fgtge.XX_o)
- .debug_line      0x000430         0x56 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(fixsfsi.XX_o)
- .debug_line      0x000486         0x3a c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(floatsisf.XX_o)
- .debug_line      0x0004c0         0x3b c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(floatunsisf.XX_o)
- .debug_line      0x0004fb         0x33 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(fne.XX_o)
- .debug_line      0x00052e         0x4a c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(funpack.XX_o)
- .debug_line      0x000578        0x136 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(addsf3x.XX_o)
- .debug_line      0x0006ae        0x124 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(divsf3x.XX_o)
- .debug_line      0x0007d2         0xcc c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(mulsf3x.XX_o)
- .debug_line      0x00089e         0x72 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(dnrmpackfx.XX_o)
- .debug_line      0x000910         0x7a c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(unpackdnrmfx.XX_o)
- .debug_line      0x00098a         0x5e c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(typefx.XX_o)
- .debug_line      0x0009e8         0x51 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(propnanfx.XX_o)
- .debug_line      0x000a39         0x98 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(spackfx.XX_o)
- .debug_line      0x000ad1         0x79 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(unpackfx.XX_o)
- .debug_line      0x000b4a         0x1a c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(errno.XX_o)
- .debug_line      0x000b64         0x53 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(fcompare.XX_o)
- .debug_line      0x000bb7         0x47 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(floatdisf.XX_o)
- .debug_line      0x000bfe         0x6c c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(floatundisf.XX_o)
- .debug_line      0x000c6a         0x5a c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(fpack.XX_o)
- .debug_line      0x000cc4         0x3e c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(funpack2.XX_o)
+ .debug_line      0x000000        0x3bf build/default/production/main.o
+ .debug_line      0x0003bf         0x37 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(feqltle.XX_o)
+ .debug_line      0x0003f6         0x35 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(fgtge.XX_o)
+ .debug_line      0x00042b         0x56 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(fixsfsi.XX_o)
+ .debug_line      0x000481         0x3a c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(floatsisf.XX_o)
+ .debug_line      0x0004bb         0x3b c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(floatunsisf.XX_o)
+ .debug_line      0x0004f6         0x33 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(fne.XX_o)
+ .debug_line      0x000529         0x4a c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(funpack.XX_o)
+ .debug_line      0x000573        0x136 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(addsf3x.XX_o)
+ .debug_line      0x0006a9        0x124 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(divsf3x.XX_o)
+ .debug_line      0x0007cd         0xcc c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(mulsf3x.XX_o)
+ .debug_line      0x000899         0x72 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(dnrmpackfx.XX_o)
+ .debug_line      0x00090b         0x7a c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(unpackdnrmfx.XX_o)
+ .debug_line      0x000985         0x5e c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(typefx.XX_o)
+ .debug_line      0x0009e3         0x51 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(propnanfx.XX_o)
+ .debug_line      0x000a34         0x98 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(spackfx.XX_o)
+ .debug_line      0x000acc         0x79 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(unpackfx.XX_o)
+ .debug_line      0x000b45         0x1a c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(errno.XX_o)
+ .debug_line      0x000b5f         0x53 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(fcompare.XX_o)
+ .debug_line      0x000bb2         0x47 c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(floatdisf.XX_o)
+ .debug_line      0x000bf9         0x6c c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(floatundisf.XX_o)
+ .debug_line      0x000c65         0x5a c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(fpack.XX_o)
+ .debug_line      0x000cbf         0x3e c:/program files/microchip/xc16/v2.10/bin/bin/../../lib\libc99-pic30-elf.a(funpack2.XX_o)
 
 .debug_frame      0x000000        0x404
  *(.debug_frame)
  .debug_frame     0x000000        0x404 build/default/production/main.o
 
-.debug_str        0x000000        0x391
+.debug_str        0x000000        0x3b7
  *(.debug_str)
- .debug_str       0x000000        0x391 build/default/production/main.o
+ .debug_str       0x000000        0x3b7 build/default/production/main.o
 
 .debug_loc
  *(.debug_loc)
@@ -607,10 +613,10 @@ __FDS
  *(.debug_macinfo)
 
 .debug_pubnames
-                  0x000000        0x4e4
+                  0x000000        0x529
  *(.debug_pubnames)
  .debug_pubnames
-                  0x000000        0x4e4 build/default/production/main.o
+                  0x000000        0x529 build/default/production/main.o
 
 .debug_ranges
  *(.debug_ranges)
@@ -1363,8 +1369,8 @@ __c30_signature
  .ivt._T3Interrupt
                   0x000024          0x2 build/default/production/main.o
 
-.const              0x8c16         0x4e load address 0x000c16  
- .const             0x8c16         0x4e build/default/production/main.o
+.const              0x8c16         0x56 load address 0x000c16  
+ .const             0x8c16         0x56 build/default/production/main.o
                     0x8c16                  _WHEEL_DIAMETER_MM
                     0x8c1a                  _STEPS_PER_REV
                     0x8c1c                  _PI
@@ -1373,57 +1379,60 @@ __c30_signature
                     0x8c26                  _FRONT_SHARP_THRESH_DIST
                     0x8c28                  _LEFT_SHARP_THRESH_DIST
                     0x8c2a                  _RIGHT_SHARP_THRESH_DIST
-                    0x8c2c                  _BASE_WHEEL_VELOCITY
-                    0x8c30                  _KP
-                    0x8c34                  _KI
-                    0x8c38                  _KD
-                    0x8c3c                  _SLOW_DOWN_COEFFICIENT
-                    0x8c40                  _RAMP_UP_SPEED
-                    0x8c44                  _FORWARD
-                    0x8c46                  _BACKWARD
-                    0x8c48                  _MAX_WHEEL_VELOCITY
-                    0x8c4c                  _MIN_WHEEL_VELOCITY
-                    0x8c50                  _MAX_INTEGRAL_VALUE
-                    0x8c52                  _BASE_WHEEL_PULSE_WIDTH
-                    0x8c54                  _CLOCK_FREQUENCY
-                    0x8c58                  _PWM_OFF
-                    0x8c5a                  _PWM_ON
-                    0x8c5c                  _WHITE_THRESHOLD
-                    0x8c5e                  _BLACK_THRESHOLD
-                    0x8c60                  _DIST_AXLE_TO_QRDS
-                    0x8c62                  _CENTER_QRD_WHITE_THRESHOLD
+                    0x8c2c                  _FORWARD
+                    0x8c2e                  _BACKWARD
+                    0x8c30                  _MAX_WHEEL_VELOCITY
+                    0x8c34                  _MIN_WHEEL_VELOCITY
+                    0x8c38                  _MAX_INTEGRAL_VALUE
+                    0x8c3a                  _BASE_WHEEL_PULSE_WIDTH
+                    0x8c3c                  _CLOCK_FREQUENCY
+                    0x8c40                  _PWM_OFF
+                    0x8c42                  _PWM_ON
+                    0x8c44                  _WHITE_THRESHOLD
+                    0x8c46                  _BLACK_THRESHOLD
+                    0x8c48                  _CENTER_QRD_WHITE_THRESHOLD
+                    0x8c4a                  _CENTER_QRD_BLACK_THRESHOLD
+                    0x8c4c                  _LINE_WIDTH
+                    0x8c4e                  _DIST_AXLE_TO_QRDS
+                    0x8c50                  _BASE_WHEEL_VELOCITY
+                    0x8c54                  _SLOW_WHEEL_VELOCITY
+                    0x8c58                  _KP
+                    0x8c5c                  _KI
+                    0x8c60                  _KD
+                    0x8c64                  _SLOW_DOWN_COEFFICIENT
+                    0x8c68                  _RAMP_UP_SPEED
 
-.text             0x000c64        0xa96
- .text            0x000c64        0xa96 build/default/production/main.o
-                  0x000c64                  _initializeState
-                  0x000ca0                  _initializeFlags
-                  0x000cb6                  _getNumSteps
-                  0x000cf8                  _setLeftWheelVelocity
-                  0x000d60                  _setRightWheelVelocity
-                  0x000dc8                  _resetWheelsState
-                  0x000dea                  _RotateLeftWheelDistance
-                  0x000e16                  _RotateRightWheelDistance
-                  0x000e42                  _driveForwardDistance
-                  0x000e64                  _driveBackwardDistance
-                  0x000e8a                  _turn90Degrees
-                  0x000ec6                  _initializeLineFollowing
-                  0x000edc                  _allQrdsOnLine
-                  0x000f08                  _allQRDsBlack
-                  0x000f34                  _bothWheelsFinished
-                  0x000f4e                  _getCorrectionFactor
-                  0x001030                  _followLine
-                  0x001098                  _initializeCanyonNavigation
-                  0x0010a2                  _velocityToPeriod
-                  0x00110a                  _updateWheelVelocity
-                  0x00135c                  _configurePins
-                  0x00139c                  _configureAD
-                  0x001414                  _configurePWM
-                  0x0014da                  _setServoAngle
-                  0x0014fa                  _blinkLED1
-                  0x00152e                  _blinkLED2
-                  0x001562                  _stateMachine
-                  0x0016b2                  _updateState
-                  0x0016b8                  _main
+.text             0x000c6c        0xa7e
+ .text            0x000c6c        0xa7e build/default/production/main.o
+                  0x000c6c                  _initializeState
+                  0x000ca8                  _initializeFlags
+                  0x000cbe                  _getNumSteps
+                  0x000d00                  _setLeftWheelVelocity
+                  0x000d68                  _setRightWheelVelocity
+                  0x000dd0                  _resetWheelsState
+                  0x000df2                  _RotateLeftWheelDistance
+                  0x000e1e                  _RotateRightWheelDistance
+                  0x000e4a                  _driveForwardDistance
+                  0x000e6c                  _driveBackwardDistance
+                  0x000e92                  _turn90Degrees
+                  0x000ecc                  _initializeLineFollowing
+                  0x000ee2                  _allQrdsWhite
+                  0x000f0e                  _allQrdsBlack
+                  0x000f3a                  _bothWheelsFinished
+                  0x000f54                  _getCorrectionFactor
+                  0x001036                  _followLine
+                  0x00109e                  _initializeCanyonNavigation
+                  0x0010a8                  _velocityToPeriod
+                  0x001110                  _updateWheelVelocity
+                  0x00135a                  _configurePins
+                  0x00139a                  _configureAD
+                  0x001412                  _configurePWM
+                  0x0014d8                  _setServoAngle
+                  0x0014f8                  _blinkLED1
+                  0x00152c                  _blinkLED2
+                  0x001560                  _stateMachine
+                  0x0016a2                  _updateState
+                  0x0016a8                  _main
 
-.dinit            0x0016fa         0x16
- .dinit           0x0016fa         0x16 data_init
+.dinit            0x0016ea         0x16
+ .dinit           0x0016ea         0x16 data_init

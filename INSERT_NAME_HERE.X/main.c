@@ -18,51 +18,44 @@ int correction = 0;
 
 void stateMachine(){
 //    if (state.state_num != 0){ //use ramping function when changing speeds outside of line following
-        updateWheelVelocity();
+    updateWheelVelocity();
 //    }
     
     switch(state.state_num){
         case 0: //line following
+            led_2_state = 0;
             if (flags.ad_conversions_finished){
                 flags.ad_conversions_finished = 0;
                 followLine();
+                
+                led_2_state = 1;
             }
             
-            if(allQrdsOnLine()){//check if the robot ran into a T in the line
-//                resetWheelsState();
-                setLeftWheelVelocity(BASE_WHEEL_VELOCITY);
-                setRightWheelVelocity(BASE_WHEEL_VELOCITY);
+            if(allQrdsWhite()){//check if the robot ran into a T in the line
+                flags.left_wheel_reached_target = 0;
+                flags.right_wheel_reached_target = 0;
+                driveForwardDistance(DIST_AXLE_TO_QRDS + LINE_WIDTH);
                 
                 //turn on led to signal state change
                 blinkLED1(3);
                 
-                state.state_num = 1;
-            } else if (allQRDsBlack()){ //check if the robot entered the canyon
-//                blinkLED1(3);
-//                initializeCanyonNavigation();
-//                state.state_num = 10;
-            }
-            break;
-        
-        case 1: // Ran perpendicular into the line, or a T in the line
-            //drive straight until the QRDs are off the line
-            if(allQRDsBlack()){
-                driveForwardDistance(DIST_AXLE_TO_QRDS);
                 state.state_num = 2;
+                
+            } else if (allQrdsBlack()){ //check if the robot entered the canyon
+                blinkLED2(2);
+                initializeCanyonNavigation();
+                state.state_num = 10;
             }
             break;
             
         case 2: //wait until finished driving before turning
-            if(bothWheelsFinished()){  
-                resetWheelsState();
+            if(bothWheelsFinished()){
                 if (right_sharp_value > RIGHT_SHARP_THRESH_DIST && left_sharp_value < LEFT_SHARP_THRESH_DIST){
-                    led_1_state = 1;
-                    led_2_state = 0;
+                    blinkLED1(1);
                     turn90Degrees(1);
                     
                 } else{
-                    led_1_state = 0;
-                    led_2_state = 1;
+                    blinkLED2(1);
                     turn90Degrees(0);
                 }    
                 state.state_num = 3;
@@ -70,21 +63,20 @@ void stateMachine(){
             break;
             
         case 3: 
+//            if(center_qrd_value < CENTER_QRD_WHITE_THRESHOLD){
             if (bothWheelsFinished()){
+                blinkLED2(2);
                 initializeLineFollowing();
                 state.state_num = 0;
             }
             break;
             
         case 10: //Canyon Forward 
-            if (allQrdsOnLine()){
-                resetWheelsState();
-                led_1_state = 0;
-                led_2_state = 0;
-                state.state_num = 1;
+            if (allQrdsWhite()){
+                driveForwardDistance(DIST_AXLE_TO_QRDS + LINE_WIDTH);
+                state.state_num = 2;
             }
-            if (flags.left_wheel_reached_target && flags.right_wheel_reached_target){
-                resetWheelsState();
+            if (bothWheelsFinished()){
                 if (right_sharp_value > RIGHT_SHARP_THRESH_DIST && left_sharp_value < LEFT_SHARP_THRESH_DIST){
                     led_1_state = 1;
                     led_2_state = 0;
@@ -105,8 +97,7 @@ void stateMachine(){
             break;
             
         case 11: //Canyon Turn
-            if (flags.left_wheel_reached_target && flags.right_wheel_reached_target){
-                resetWheelsState();
+            if (bothWheelsFinished()){
                 driveForwardDistance(610);
                 state.state_num = 10;
             }

@@ -103,7 +103,7 @@ void driveBackwardDistance(int dist_mm){
 
 //make a 90 degree turn. Pass a 1 to turn left, or a 0 to turn right
 void turn90Degrees(int turn_left){
-    int dist_mm = (int)(0.25*PI*ROBOT_WIDTH_MM) + 20; //calculates num_steps to travel 1/4 circumference of a circle with diam = ROBOT_WIDTH, with some buffer to account for skipping steps
+    int dist_mm = (int)(0.25*PI*ROBOT_WIDTH_MM); //calculates num_steps to travel 1/4 circumference of a circle with diam = ROBOT_WIDTH
     if(turn_left){ //rotate wheels equally in opposing directions
         RotateLeftWheelDistance(-dist_mm);
         RotateRightWheelDistance(dist_mm); 
@@ -122,13 +122,12 @@ void initializeLineFollowing(void){
     setRightWheelVelocity(BASE_WHEEL_VELOCITY);
 }
 
-char allQrdsOnLine(void){
+char allQrdsWhite(void){
     return (left_qrd_value < WHITE_THRESHOLD && center_qrd_value < CENTER_QRD_WHITE_THRESHOLD && right_qrd_value < WHITE_THRESHOLD);
 }
 
-char allQRDsBlack(void){
-    return (left_qrd_value > BLACK_THRESHOLD && center_qrd_value > CENTER_QRD_WHITE_THRESHOLD && right_qrd_value > BLACK_THRESHOLD);
-    return (center_qrd_value > BLACK_THRESHOLD);
+char allQrdsBlack(void){
+    return (left_qrd_value > BLACK_THRESHOLD && center_qrd_value > CENTER_QRD_BLACK_THRESHOLD && right_qrd_value > BLACK_THRESHOLD);
 }
 
 char bothWheelsFinished(){
@@ -203,18 +202,18 @@ void updateWheelVelocity(){
     //LEFT WHEEL
     static char last_dir_left = 2;
     
-    led_1_state = 0;
-    led_2_state = 0;
+//    led_1_state = 0;
+//    led_2_state = 0;
     
     //check if velocity is within the step size (RAMP_UP_SPEED) of the target
     if (state.left_wheel_velocity != state.left_wheel_target_velocity){
         if(abs(state.left_wheel_velocity - state.left_wheel_target_velocity) > RAMP_UP_SPEED){
             if(state.left_wheel_velocity < state.left_wheel_target_velocity){
                 state.left_wheel_velocity += RAMP_UP_SPEED;
-                led_1_state = 1;
+//                led_1_state = 1;
             } else{
                 state.left_wheel_velocity -= RAMP_UP_SPEED;
-                led_2_state = 1;
+//                led_2_state = 1;
             }
         } else{
 //            state.left_wheel_velocity = state.left_wheel_target_velocity;

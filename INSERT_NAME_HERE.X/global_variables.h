@@ -47,17 +47,6 @@ const int FRONT_SHARP_THRESH_DIST = 1000; // Front SHARP distance. ~6in Higher =
 const int LEFT_SHARP_THRESH_DIST = 500; // Left SHARP distance threshold. ~1.5 ft
 const int RIGHT_SHARP_THRESH_DIST = 1000; // RIght SHARP distance threshold. ~1.5 ft
 
-
-//Line following
-const float BASE_WHEEL_VELOCITY = 1100.0;
-const float KP = 1.0; //proportional error coefficient for PID line control
-const float KI = 0.0; //integral error coefficient for PID line control
-const float KD = 0.5; //derivative error coefficient for PID line control
-const float SLOW_DOWN_COEFFICIENT = 0.2; //what portion of correction factor is applied to slow down the robot while turning
-                                        //the sharper the robot is turning, the slower it will go
-const float RAMP_UP_SPEED = 15; //slope of ramp up function. Higher value is more 
-                             //responsive, lower value is less likely to skip steps
-
 const int FORWARD = 0;
 const int BACKWARD = 1;
 
@@ -69,11 +58,28 @@ const int BASE_WHEEL_PULSE_WIDTH = 299;
 const float CLOCK_FREQUENCY = 4000000.0;
 const int PWM_OFF = 0b000;
 const int PWM_ON = 0b110;
-const int WHITE_THRESHOLD = 2000; //qrd values below this are considered to be on the line 
-const int BLACK_THRESHOLD = 2000; //qrd values above this are considered to be off the line 
-const int DIST_AXLE_TO_QRDS = 50; // how far in front of the axle the qrd sensors are
-const int CENTER_QRD_WHITE_THRESHOLD = 100;
-//const int CENTER_QRD_BLACK_THRESHOLD = 100;
+
+const int WHITE_THRESHOLD = 3000; //qrd values below this are considered to be on the line 
+const int BLACK_THRESHOLD = 3200; //qrd values above this are considered to be off the line 
+const int CENTER_QRD_WHITE_THRESHOLD = 3000;
+const int CENTER_QRD_BLACK_THRESHOLD = 3200;
+
+
+const int LINE_WIDTH = 25;
+const int DIST_AXLE_TO_QRDS = 45; // how far in front of the axle the qrd sensors are
+
+//Line following
+//const float BASE_WHEEL_VELOCITY = 1100.0; //fast
+const float BASE_WHEEL_VELOCITY = 600.0; //testing
+const float SLOW_WHEEL_VELOCITY = 400.0;
+const float KP = 1.0; //proportional error coefficient for PID line control
+const float KI = 0.0; //integral error coefficient for PID line control
+const float KD = 0.5; //derivative error coefficient for PID line control
+const float SLOW_DOWN_COEFFICIENT = 0.2; //what portion of correction factor is applied to slow down the robot while turning
+                                        //the sharper the robot is turning, the slower it will go
+const float RAMP_UP_SPEED = 15; //slope of ramp up function. Higher value is more 
+                             //responsive, lower value is less likely to skip steps
+
 
 
 #endif	/* XC_HEADER_TEMPLATE_H */
