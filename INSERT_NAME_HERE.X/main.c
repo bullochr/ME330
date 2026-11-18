@@ -41,10 +41,51 @@ void stateMachine(){
                 
                 state.state_num = 2;
                 
-            } else if (allQrdsBlack()){ //check if the robot entered the canyon
+            } 
+            if (allQrdsBlack()){ //check if the robot entered the canyon
                 blinkLED2(2);
                 initializeCanyonNavigation();
                 state.state_num = 10;
+            }
+            if (center_qrd_value < CENTER_QRD_WHITE_THRESHOLD && sample_collection_value > PHOTO_DIODE_THRESHOLD){
+                blinkLED1(4);
+                turn90Degrees(0);
+                blinkLED2(1); //place holder for SERVO MOVEMENT TO BE IMPLEMENTED (see line below)
+                //setServoAngle("Up-A-Bit");
+                driveForwardDistance(150); //needs refining for distance to ball dispenser
+                if (ball_qrd_value < WHITE_THRESHOLD){
+                    state.ball_white = 1;
+                    driveBackwardDistance(130);
+                    state.state_num = 30;
+                }
+                if ((ball_qrd_value > BLACK_THRESHOLD)){
+                    state.ball_white = 0;
+                    driveBackwardDistance(130);
+                    state.state_num = 30;
+                }
+            }
+       
+            if (center_qrd_value < CENTER_QRD_WHITE_THRESHOLD && left_sharp_value > LEFT_SHARP_THRESH_DIST && right_sharp_value > RIGHT_SHARP_THRESH_DIST){
+                blinkLED2(4);
+                //driveForwardDistance(150); //correction value if needed to get to the center of the bin after turning
+                if (state.ball_white == 1){        //if ball is WHITE
+                    turn90Degrees(1);
+                    state.turneddirection = 1; //note that we have turned LEFT
+                    driveForwardDistance(30);   //ADJUST TO REACH BIN
+                    blinkLED2(1); //REMOVE ONCE ADDED SERVO
+                    //setServoAngle(tipbucketbackdown);  //NEEDS IMPLEMENTING
+                    driveBackwardDistance(30);  //ADJUST TO RETURN TO LINE
+                    state.state_num = 31;     //set to ball deposit state
+                }
+                if (state.ball_white == 0){
+                    turn90Degrees(0);
+                    state.turneddirection = 0;           //note that we have turned right
+                    driveForwardDistance(30);            //ADJUST TO REACH BIN
+                    blinkLED2(1);                        //REMOVE ONCE ADDED SERVO
+                    //setServoAngle(tipbucketbackdown);  //NEEDS IMPLEMENTING
+                    driveBackwardDistance(30);           //ADJUST TO RETURN TO LINE
+                    state.state_num = 31;                 //set to ball deposit state
+                }
             }
             break;
             
@@ -106,7 +147,29 @@ void stateMachine(){
 
             break;
             
-        case 30:
+        case 30: // BALL COLLECT BACK TO LINE FOLLOWING
+            if (center_qrd_value > CENTER_QRD_BLACK_THRESHOLD){
+                driveBackwardDistance(10);
+            }
+            else if (center_qrd_value < CENTER_QRD_WHITE_THRESHOLD){
+                turn90Degrees(1);
+                state.state_num = 0;
+            }
+            break;
+        case 31: // BALL DEPOSIT BACK TO LINE FOLLOWING
+            if (center_qrd_value > CENTER_QRD_BLACK_THRESHOLD) {
+                driveBackwardDistance(10);
+            }
+            if (center_qrd_value < CENTER_QRD_WHITE_THRESHOLD && state.turneddirection == 1){  //If hit the line and had previously turned left
+                turn90Degrees(0);
+                state.turneddirection = -1;
+                state.state_num = 0;
+            }
+            if (center_qrd_value < CENTER_QRD_WHITE_THRESHOLD && state.turneddirection == 0){  //If hit the line and had previously turned left
+                turn90Degrees(1);
+                state.turneddirection = -1;
+                state.state_num = 0;
+            }
             break;
         
         default:

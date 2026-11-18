@@ -63,7 +63,7 @@ const int WHITE_THRESHOLD = 3000; //qrd values below this are considered to be o
 const int BLACK_THRESHOLD = 3200; //qrd values above this are considered to be off the line 
 const int CENTER_QRD_WHITE_THRESHOLD = 3000;
 const int CENTER_QRD_BLACK_THRESHOLD = 3200;
-
+const int PHOTO_DIODE_THRESHOLD = 2500; //still need refining probably, initial guess 2500
 
 const int LINE_WIDTH = 25;
 const int DIST_AXLE_TO_QRDS = 45; // how far in front of the axle the qrd sensors are
