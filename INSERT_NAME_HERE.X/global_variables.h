@@ -43,7 +43,7 @@ const int STEPS_PER_REV = 800; //quarter stepping
 const float PI = 3.141592;
 const float ROBOT_WIDTH_MM = 201.2; //distance from wheel to wheel
 const int SERVO_PWM_PERIOD = 10000; //leave this at 10000 to keep pwm at 50hz
-const int FRONT_SHARP_THRESH_DIST = 1000; // Front SHARP distance. ~6in Higher = closer, lower = farther away
+const int FRONT_SHARP_THRESH_DIST = 1500; // Front SHARP distance. ~6in Higher = closer, lower = farther away
 const int LEFT_SHARP_THRESH_DIST = 500; // Left SHARP distance threshold. ~1.5 ft
 const int RIGHT_SHARP_THRESH_DIST = 1000; // RIght SHARP distance threshold. ~1.5 ft
 
@@ -59,10 +59,10 @@ const float CLOCK_FREQUENCY = 4000000.0;
 const int PWM_OFF = 0b000;
 const int PWM_ON = 0b110;
 
-const int WHITE_THRESHOLD = 3000; //qrd values below this are considered to be on the line 
-const int BLACK_THRESHOLD = 3200; //qrd values above this are considered to be off the line 
-const int CENTER_QRD_WHITE_THRESHOLD = 3000;
-const int CENTER_QRD_BLACK_THRESHOLD = 3200;
+const int WHITE_THRESHOLD = 1000; //qrd values below this are considered to be on the line 
+const int BLACK_THRESHOLD = 2500; //qrd values above this are considered to be off the line 
+const int CENTER_QRD_WHITE_THRESHOLD = 1000;
+const int CENTER_QRD_BLACK_THRESHOLD = 2500;
 
 
 const int LINE_WIDTH = 25;
