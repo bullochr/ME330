@@ -17,10 +17,6 @@
 int correction = 0;
 
 void stateMachine(){
-//    if (state.state_num != 0){ //use ramping function when changing speeds outside of line following
-    updateWheelVelocity();
-//    }
-    
     switch(state.state_num){
         case 0: //line following
             led_2_state = 0;
@@ -34,11 +30,11 @@ void stateMachine(){
             if(allQrdsWhite()){//check if the robot ran into a T in the line
                 flags.left_wheel_reached_target = 0;
                 flags.right_wheel_reached_target = 0;
-                driveForwardDistance(DIST_AXLE_TO_QRDS + LINE_WIDTH);
                 
                 //turn on led to signal state change
-                blinkLED1(3);
+                blinkLED1(1);
                 
+                driveDistanceBlocking(DIST_AXLE_TO_QRDS + LINE_WIDTH);                
                 state.state_num = 2;
                 
             } else if (allQrdsBlack()){ //check if the robot entered the canyon
@@ -48,57 +44,73 @@ void stateMachine(){
             }
             break;
             
-        case 2: //wait until finished driving before turning
-            if(bothWheelsFinished()){
-                if (right_sharp_value > RIGHT_SHARP_THRESH_DIST && left_sharp_value < LEFT_SHARP_THRESH_DIST){
-                    blinkLED1(1);
-                    turn90Degrees(1);
-                    
-                } else{
-                    blinkLED2(1);
-                    turn90Degrees(0);
-                }    
-                state.state_num = 3;
-            }
+        case 2: //both wheels are on the line, this state will turn the robot to prepare for line following
+            
+            if (right_sharp_value < RIGHT_SHARP_THRESH_DIST && left_sharp_value > LEFT_SHARP_THRESH_DIST){
+                blinkLED1(1);
+                setLeftWheelVelocity(-SLOW_WHEEL_VELOCITY);
+                setRightWheelVelocity(SLOW_WHEEL_VELOCITY);
+
+            } else{
+                blinkLED2(1);
+                setLeftWheelVelocity(SLOW_WHEEL_VELOCITY);
+                setRightWheelVelocity(-SLOW_WHEEL_VELOCITY);
+            }    
+            state.state_num = 3;
             break;
             
         case 3: 
-//            if(center_qrd_value < CENTER_QRD_WHITE_THRESHOLD){
-            if (bothWheelsFinished()){
+            if(right_qrd_value > BLACK_THRESHOLD && center_qrd_value < CENTER_QRD_WHITE_THRESHOLD && left_qrd_value > BLACK_THRESHOLD){
                 blinkLED2(2);
                 initializeLineFollowing();
                 state.state_num = 0;
             }
             break;
             
-        case 10: //Canyon Forward 
+        case 10: //Canyon Forward
             if (allQrdsWhite()){
-                driveForwardDistance(DIST_AXLE_TO_QRDS + LINE_WIDTH);
+                driveDistanceBlocking(DIST_AXLE_TO_QRDS + LINE_WIDTH);
                 state.state_num = 2;
+                blinkLED1(1);
             }
-            if (bothWheelsFinished()){
+            if (front_sharp_value > FRONT_SHARP_THRESH_DIST){
+                //right detects a wall, left doesnt
                 if (right_sharp_value > RIGHT_SHARP_THRESH_DIST && left_sharp_value < LEFT_SHARP_THRESH_DIST){
+                    resetWheelsState();
                     led_1_state = 1;
                     led_2_state = 0;
-                    turn90Degrees(1);
-                    state.state_num = 11;
-                } else if (right_sharp_value < RIGHT_SHARP_THRESH_DIST && left_sharp_value > LEFT_SHARP_THRESH_DIST){
-                    led_1_state = 0;
-                    led_2_state = 1;
                     turn90Degrees(0);
                     state.state_num = 11;
-                }else{
+                    
+                //right doesnt detect a wall, left does
+                } else if (right_sharp_value < RIGHT_SHARP_THRESH_DIST && left_sharp_value > LEFT_SHARP_THRESH_DIST){
+                    resetWheelsState();
+                    led_1_state = 0;
+                    led_2_state = 1;
+                    turn90Degrees(1);
+                    state.state_num = 11;
+                
+                //both walls detected
+                }else if (right_sharp_value > RIGHT_SHARP_THRESH_DIST && left_sharp_value > LEFT_SHARP_THRESH_DIST){
+                    resetWheelsState();
                     led_1_state = 1;
                     led_2_state = 1;
                     driveForwardDistance(610);
                     state.state_num = 10;
+                
+                //no walls detected. This shouldnt happen
+                }else {
+                    //blink red led rapidly 5 times
+                    errorLED2(5, 1000);
                 }
             }      
             break;
             
         case 11: //Canyon Turn
             if (bothWheelsFinished()){
-                driveForwardDistance(610);
+                setLeftWheelVelocity(BASE_WHEEL_VELOCITY);
+                setRightWheelVelocity(BASE_WHEEL_VELOCITY);
+                
                 state.state_num = 10;
             }
         
@@ -112,13 +124,6 @@ void stateMachine(){
         default:
             break;
     }
-}
-
-//react to custom flags and make decisions about the state
-void updateState(){
-  
-    //get sensor data
-    //make state change decisions
 }
 
 int main(void) {
@@ -140,11 +145,10 @@ int main(void) {
     
     state.state_num = 0;     
     
-    setRightWheelVelocity(BASE_WHEEL_VELOCITY);
-    setLeftWheelVelocity(BASE_WHEEL_VELOCITY);
-   
+    initializeLineFollowing();
     
-    while(1){
+    while(1){ 
+        updateWheelVelocity();
         stateMachine();
     }
     

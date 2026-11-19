@@ -40,5 +40,22 @@ void blinkLED2(int num_blinks){ //use Timer 2 to asynchronously blink LED
     led_2_state = 1;
 }
 
+void errorLED2(int num_blinks, int period){ //use Timer 2 to asynchronously blink LED
+//    int period = 10000;
+//    int num_blinks = 
+    T3CONbits.TON = 1;
+    T3CONbits.TCS = 0;
+    T3CONbits.TCKPS = 2;
+    PR3 = period;
+    TMR3 = 0;
+    
+    _T3IP = 4; //priority
+    _T3IE = 1; //enable interrupt
+    _T3IF = 0; //reset flag
+    state.led_2_target_num_blinks = num_blinks;
+    
+    led_2_state = 1;
+}
+
 #endif	/* XC_HEADER_TEMPLATE_H */
 
