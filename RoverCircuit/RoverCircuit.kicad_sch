@@ -6371,12 +6371,6 @@
 		(uuid "df6787e9-fcc6-4230-955e-f79bb6094c65")
 	)
 	(junction
-		(at 35.56 87.63)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "e1a85187-84f7-457a-845a-360d2b632ef2")
-	)
-	(junction
 		(at 46.99 35.56)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -8176,16 +8170,6 @@
 	)
 	(wire
 		(pts
-			(xy 35.56 87.63) (xy 35.56 95.25)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "bb6587b1-42b7-4c1f-85d9-be7b103d2b65")
-	)
-	(wire
-		(pts
 			(xy 162.56 153.67) (xy 152.4 153.67)
 		)
 		(stroke
@@ -8636,7 +8620,7 @@
 	)
 	(wire
 		(pts
-			(xy 35.56 87.63) (xy 35.56 83.82)
+			(xy 35.56 83.82) (xy 35.56 95.25)
 		)
 		(stroke
 			(width 0)
@@ -10978,74 +10962,6 @@
 			(project "RoverCircuit"
 				(path "/58469410-397a-49a6-b9cd-aafc9ce066c5"
 					(reference "J8_Front_Sharp1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:C")
-		(at 31.75 87.63 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "256e7f8d-36b0-48d4-b6e3-f4e8b0af4669")
-		(property "Reference" "C2"
-			(at 31.75 80.01 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "0.1uF"
-			(at 31.75 82.55 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Capacitor_THT:C_Disc_D3.4mm_W2.1mm_P2.50mm"
-			(at 35.56 86.6648 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 31.75 87.63 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Unpolarized capacitor"
-			(at 31.75 87.63 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "2"
-			(uuid "65ef8d8d-081c-42e8-b84f-9dd292a0cdb2")
-		)
-		(pin "1"
-			(uuid "3ff2352c-5542-46af-af77-e1694d0101eb")
-		)
-		(instances
-			(project "RoverCircuit"
-				(path "/58469410-397a-49a6-b9cd-aafc9ce066c5"
-					(reference "C2")
 					(unit 1)
 				)
 			)

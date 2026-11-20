@@ -25,7 +25,7 @@ struct stateStruct{
     int right_wheel_target_steps;
     int left_wheel_num_completed_steps;
     int right_wheel_num_completed_steps;
-    float left_wheel_velocity;
+float left_wheel_velocity;
     float right_wheel_velocity;
     float left_wheel_target_velocity; //target speed, actual speed approaches this in ramping up
     float right_wheel_target_velocity;

@@ -14,9 +14,9 @@
 #include <xc.h> // include processor files - each processor file is guarded.  
 
 //register definitions - inputs
-#define left_qrd_value ADC1BUF4 
+#define right_qrd_value ADC1BUF4 
 #define center_qrd_value ADC1BUF13 
-#define right_qrd_value ADC1BUF14 //TODO: reset this to ADC1BUF14 (pin 8), figure out why pin 8 has so much noise, its currently on pin 2
+#define left_qrd_value ADC1BUF14 //TODO: reset this to ADC1BUF14 (pin 8), figure out why pin 8 has so much noise, its currently on pin 2
 #define satellite_sensor_value ADC1BUF0
 #define ball_qrd_value ADC1BUF1
 #define sample_collection_value ADC1BUF12
@@ -50,8 +50,8 @@ const int RIGHT_SHARP_THRESH_DIST = 1000; // RIght SHARP distance threshold. ~1.
 const int FORWARD = 0;
 const int BACKWARD = 1;
 
-const float MAX_WHEEL_VELOCITY = 2000.0;
-const float MIN_WHEEL_VELOCITY = 70.0;
+const float MAX_WHEEL_SPEED = 2000.0;
+const float MIN_WHEEL_SPEED = 70.0; //necessary to prevent integer overflow when convtering to period
 const int MAX_INTEGRAL_VALUE = 200;
 
 const int BASE_WHEEL_PULSE_WIDTH = 299;
@@ -59,19 +59,22 @@ const float CLOCK_FREQUENCY = 4000000.0;
 const int PWM_OFF = 0b000;
 const int PWM_ON = 0b110;
 
-const int WHITE_THRESHOLD = 1000; //qrd values below this are considered to be on the line 
+const int WHITE_THRESHOLD = 700; //qrd values below this are considered to be on the line 
 const int BLACK_THRESHOLD = 2500; //qrd values above this are considered to be off the line 
-const int CENTER_QRD_WHITE_THRESHOLD = 1000;
-const int CENTER_QRD_BLACK_THRESHOLD = 2500;
+//const int CENTER_QRD_WHITE_THRESHOLD = 1000;
+//const int CENTER_QRD_BLACK_THRESHOLD = 2500;
 
+const int MAX_SERVO_ANGLE = 70;
+const int MIN_SERVO_ANGLE = 20;
 
 const int LINE_WIDTH = 25;
-const int DIST_AXLE_TO_QRDS = 45; // how far in front of the axle the qrd sensors are
+const int DIST_AXLE_TO_QRDS = 38; // how far in front of the axle the qrd sensors are
+//45 was too far
 
 //Line following
-//const float BASE_WHEEL_VELOCITY = 1100.0; //fast
-const float BASE_WHEEL_VELOCITY = 600.0; //testing
-const float SLOW_WHEEL_VELOCITY = 400.0;
+const float BASE_WHEEL_VELOCITY = 1100.0; //fast
+//const float BASE_WHEEL_VELOCITY = 600.0; //testing
+const float SLOW_WHEEL_VELOCITY = 200.0;
 const float KP = 1.0; //proportional error coefficient for PID line control
 const float KI = 0.0; //integral error coefficient for PID line control
 const float KD = 0.5; //derivative error coefficient for PID line control

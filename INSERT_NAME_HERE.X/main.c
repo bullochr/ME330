@@ -19,49 +19,44 @@ int correction = 0;
 void stateMachine(){
     switch(state.state_num){
         case 0: //line following
-            led_2_state = 0;
             if (flags.ad_conversions_finished){
                 flags.ad_conversions_finished = 0;
                 followLine();
-                
-                led_2_state = 1;
             }
             
             if(allQrdsWhite()){//check if the robot ran into a T in the line
-                flags.left_wheel_reached_target = 0;
-                flags.right_wheel_reached_target = 0;
-                
                 //turn on led to signal state change
-                blinkLED1(1);
-                
-                driveDistanceBlocking(DIST_AXLE_TO_QRDS + LINE_WIDTH);                
+//                blinkLED1(1);
+                led_1_state = 1;
+                driveDistanceBlocking(DIST_AXLE_TO_QRDS + LINE_WIDTH);  
+                led_1_state = 0;
                 state.state_num = 2;
-                
+//                
             } else if (allQrdsBlack()){ //check if the robot entered the canyon
-                blinkLED2(2);
-                initializeCanyonNavigation();
-                state.state_num = 10;
+//                blinkLED2(2);
+//                initializeCanyonNavigation();
+//                state.state_num = 10;
             }
             break;
             
         case 2: //both wheels are on the line, this state will turn the robot to prepare for line following
             
-            if (right_sharp_value < RIGHT_SHARP_THRESH_DIST && left_sharp_value > LEFT_SHARP_THRESH_DIST){
-                blinkLED1(1);
-                setLeftWheelVelocity(-SLOW_WHEEL_VELOCITY);
-                setRightWheelVelocity(SLOW_WHEEL_VELOCITY);
+//            if (right_sharp_value < RIGHT_SHARP_THRESH_DIST && left_sharp_value > LEFT_SHARP_THRESH_DIST){
+//                blinkLED1(1);
+//                setLeftWheelVelocity(-SLOW_WHEEL_VELOCITY);
+//                setRightWheelVelocity(SLOW_WHEEL_VELOCITY);
 
-            } else{
-                blinkLED2(1);
+//            } else{
+            led_2_state = 1;
                 setLeftWheelVelocity(SLOW_WHEEL_VELOCITY);
                 setRightWheelVelocity(-SLOW_WHEEL_VELOCITY);
-            }    
+//            }    
             state.state_num = 3;
             break;
             
         case 3: 
-            if(right_qrd_value > BLACK_THRESHOLD && center_qrd_value < CENTER_QRD_WHITE_THRESHOLD && left_qrd_value > BLACK_THRESHOLD){
-                blinkLED2(2);
+            if(right_qrd_value > BLACK_THRESHOLD && center_qrd_value < WHITE_THRESHOLD && left_qrd_value > BLACK_THRESHOLD){
+                led_2_state = 0;
                 initializeLineFollowing();
                 state.state_num = 0;
             }
@@ -143,12 +138,23 @@ int main(void) {
     //initialize a struct to hold the variables that define the state of the robot
     state = initializeState();
     
-    state.state_num = 0;     
+    state.state_num = 0;
+    
+//    state.state_num = 1;
     
     initializeLineFollowing();
     
     while(1){ 
-        updateWheelVelocity();
+        if (state.state_num != 0){
+            updateWheelVelocity();
+        }
+        
+        if(right_qrd_value > BLACK_THRESHOLD && center_qrd_value < WHITE_THRESHOLD && left_qrd_value > BLACK_THRESHOLD){
+            led_2_state = 1;
+        }else {
+            led_2_state = 0;
+        }
+        
         stateMachine();
     }
     
