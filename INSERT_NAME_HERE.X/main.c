@@ -19,29 +19,33 @@ int correction = 0;
 void stateMachine(){
     switch(state.state_num){
         case 0: //line following
-            led_2_state = 0;
             if (flags.ad_conversions_finished){
                 flags.ad_conversions_finished = 0;
                 followLine();
                 
-                led_2_state = 1;
             }
             
-            if(allQrdsWhite()){//check if the robot ran into a T in the line
-                flags.left_wheel_reached_target = 0;
-                flags.right_wheel_reached_target = 0;
-                
-                //turn on led to signal state change
-                blinkLED1(1);
-                
-                driveDistanceBlocking(DIST_AXLE_TO_QRDS + LINE_WIDTH);                
-                state.state_num = 2;
-                
-            } else if (allQrdsBlack()){ //check if the robot entered the canyon
-                blinkLED2(2);
-                initializeCanyonNavigation();
-                state.state_num = 10;
-            }
+//            if(allQrdsWhite()){//check if the robot ran into a T in the line
+//                flags.left_wheel_reached_target = 0;
+//                flags.right_wheel_reached_target = 0;
+//                
+//                //turn on led to signal state change
+//                blinkLED1(1);
+//                
+//                driveDistanceBlocking(DIST_AXLE_TO_QRDS + LINE_WIDTH);                
+//                state.state_num = 2;
+//                
+//            } else if (allQrdsBlack()){ //check if the robot entered the canyon
+//                blinkLED2(2);
+//                initializeCanyonNavigation();
+//                state.state_num = 10;
+//            }
+            
+//            //TODO: update trigger condition, remove && 0
+//            if (leftQrdOnLine() && centerQrdOnLine() && 0){ //Land trigger
+//                turn90Degrees(0);
+//                state.state_num = 20;
+//            }
             break;
             
         case 2: //both wheels are on the line, this state will turn the robot to prepare for line following
@@ -114,8 +118,61 @@ void stateMachine(){
                 state.state_num = 10;
             }
         
-        case 20://
+         case 20: //Landing approach: finish left turn, start driving
+            if (bothWheelsFinished()){
+                driveForwardDistance(610);
+                state.state_num = 21;
+            }
+            break;
+            
+         case 21: // Landing approach: forward until front sharp sees the wall
+            if (front_sharp_value > FRONT_SHARP_THRESH_DIST){
+                resetWheelsState();          // cancel the current forward move
+                turn180Degrees(1);
+                state.state_num = 23;        // skip 22, it's no longer needed
+            }
+            else if (bothWheelsFinished()){
+                driveForwardDistance(610);   // keep going in chunks until the wall appears
+            }
+            break;
+        
+        case 23: //Landing approach: finish 180, begin landing zone
+            if (bothWheelsFinished()){
+                state.state_num = 24;
+            }
+            break;
+            
+        case 24: //Landing Zone
+            if (satellite_sensor_value < IR_SATELITE_THRESH){
+                
+                static float servo_angle = 0;
+                
+                setServoAngle(servo_angle);
+                servo_angle = servo_angle + .01;
+                
+                if (satellite_sensor_value > 200){ //use to test IR Threshold needed
+                    led_1_state = 1;}
+                
+                if (satellite_sensor_value > 100){ //use to test IR Threshold needed
+                    led_2_state = 1;}
+                
+                if (servo_angle > 180){
+                    servo_angle = 0;
+                    led_1_state = 0;
+                    led_2_state = 0;
+                }
+            }
+            
+            if (satellite_sensor_value > IR_SATELITE_THRESH){
 
+               
+                laser_state = 1;
+                state.state_num = 25;
+            }
+            break;
+            
+        case 25: //Laser State
+            //Do nothing
             break;
             
         case 30:

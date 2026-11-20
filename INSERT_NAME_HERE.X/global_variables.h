@@ -17,9 +17,9 @@
 #define left_qrd_value ADC1BUF4 
 #define center_qrd_value ADC1BUF13 
 #define right_qrd_value ADC1BUF14 //TODO: reset this to ADC1BUF14 (pin 8), figure out why pin 8 has so much noise, its currently on pin 2
-#define satellite_sensor_value ADC1BUF0
+#define sample_collection_value ADC1BUF0
 #define ball_qrd_value ADC1BUF1
-#define sample_collection_value ADC1BUF12
+#define satellite_sensor_value ADC1BUF12
 #define front_sharp_value ADC1BUF11
 #define right_sharp_value ADC1BUF10
 #define left_sharp_value ADC1BUF9
@@ -64,9 +64,14 @@ const int BLACK_THRESHOLD = 2500; //qrd values above this are considered to be o
 const int CENTER_QRD_WHITE_THRESHOLD = 1000;
 const int CENTER_QRD_BLACK_THRESHOLD = 2500;
 
+const int MAX_SERVO_ANGLE = 70;
+const int MIN_SERVO_ANGLE = 20;
 
 const int LINE_WIDTH = 25;
 const int DIST_AXLE_TO_QRDS = 45; // how far in front of the axle the qrd sensors are
+
+const int IR_SATELITE_THRESH = 40; //Bucket servo will stop when this is hit while in landing zone
+const int LAND_STEPS_MM = 300; // The distance needed to get into the landing zone
 
 //Line following
 //const float BASE_WHEEL_VELOCITY = 1100.0; //fast
