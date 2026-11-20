@@ -17,9 +17,9 @@
 #define left_qrd_value ADC1BUF4 
 #define center_qrd_value ADC1BUF13 
 #define right_qrd_value ADC1BUF14 //TODO: reset this to ADC1BUF14 (pin 8), figure out why pin 8 has so much noise, its currently on pin 2
-#define satellite_sensor_value ADC1BUF0
+#define sample_collection_value ADC1BUF0
 #define ball_qrd_value ADC1BUF1
-#define sample_collection_value ADC1BUF12
+#define satellite_sensor_value ADC1BUF12
 #define front_sharp_value ADC1BUF11
 #define right_sharp_value ADC1BUF10
 #define left_sharp_value ADC1BUF9
@@ -39,7 +39,7 @@
 const float WHEEL_DIAMETER_MM = 89.95; //mm
 const int STEPS_PER_REV = 800; //quarter stepping
 const float PI = 3.141592;
-const float ROBOT_WIDTH_MM = 201.2; //distance from wheel to wheel
+const float ROBOT_WIDTH_MM = 180; //distance from wheel to wheel
 const int SERVO_PWM_PERIOD = 10000; //leave this at 10000 to keep pwm at 50hz
 const int FRONT_SHARP_THRESH_DIST = 1000; // Front SHARP distance. ~6in Higher = closer, lower = farther away
 const int LEFT_SHARP_THRESH_DIST = 500; // Left SHARP distance threshold. ~1.5 ft
@@ -71,6 +71,8 @@ const int PWM_ON = 0b110;
 const int WHITE_THRESHOLD = 1000; //qrd values below this are considered to be on the line 
 const int DIST_AXLE_TO_QRDS = 20; // how far in front of the axle the qrd sensors are
 
+const int IR_SATELITE_THRESH = 40; //Bucket servo will stop when this is hit while in landing zone
+const int LAND_STEPS_MM = 300; // The distance needed to get into the landing zone
 
 #define QRD_FILTER_LENGTH 50;
 //const static int QRD_FILTER_LENGTH = 50; //line following averages the last n measurements
