@@ -16,6 +16,7 @@
 
 //given angle in degrees between 0 and 180, set servo pwm
 void setServoAngle(int angle){
+    OC3CON1bits.OCM = PWM_ON;
     int width = (int)(angle * (1000.0/180.0)) + 250; //convert angle in degrees to pulse width between 250 and 1250 timer count
     servo_pulse_width = width;
 }

@@ -100,16 +100,28 @@ void resetWheelsState(void){
     state.right_wheel_num_completed_steps = 0; //reset number of completed steps
     state.right_wheel_target_steps = 0; //reset target steps
     state.right_wheel_target_velocity = BASE_WHEEL_VELOCITY;
+    state.right_wheel_velocity = 0;
     right_wheel_dir = FORWARD;
     
     flags.left_wheel_reached_target = 0; //reset flag
     state.left_wheel_num_completed_steps = 0; //reset number of completed steps
     state.left_wheel_target_steps = 0; //reset target steps
     state.left_wheel_target_velocity = BASE_WHEEL_VELOCITY;
+    state.left_wheel_velocity = 0;
     left_wheel_dir = FORWARD;
 }
 
 void RotateLeftWheelDistance(int dist_mm){
+    int num_steps = getNumSteps(dist_mm); //calculate steps required to go desired distance
+    if (dist_mm >= 0) {
+        setLeftWheelVelocity(SLOW_WHEEL_VELOCITY);
+    }else{
+        setLeftWheelVelocity(-SLOW_WHEEL_VELOCITY);
+    }
+    state.left_wheel_target_steps = abs(num_steps);
+}
+
+void RotateLeftWheelDistanceNoRamp(int dist_mm){
     int num_steps = getNumSteps(dist_mm); //calculate steps required to go desired distance
     if (dist_mm >= 0) {
         setLeftWheelVelocity(SLOW_WHEEL_VELOCITY);
@@ -163,7 +175,18 @@ void driveBackwardDistance(int dist_mm){
 
 //make a 90 degree turn. Pass a 1 to turn left, or a 0 to turn right
 void turn90Degrees(int turn_left){
-    int dist_mm = (int)(0.25*PI*ROBOT_WIDTH_MM); //calculates num_steps to travel 1/4 circumference of a circle with diam = ROBOT_WIDTH
+    int dist_mm = (int)(0.25*PI*ROBOT_WIDTH_MM) + 40; //calculates num_steps to travel 1/4 circumference of a circle with diam = ROBOT_WIDTH
+    if(turn_left){ //rotate wheels equally in opposing directions
+        RotateLeftWheelDistance(-dist_mm);
+        RotateRightWheelDistance(dist_mm); 
+    }else{
+        RotateLeftWheelDistance(dist_mm);
+        RotateRightWheelDistance(-dist_mm); 
+    }
+}
+
+void turn90DegreesNoRamp(int turn_left){
+    int dist_mm = (int)(0.25*PI*ROBOT_WIDTH_MM) + 20; //calculates num_steps to travel 1/4 circumference of a circle with diam = ROBOT_WIDTH
     if(turn_left){ //rotate wheels equally in opposing directions
         RotateLeftWheelDistance(-dist_mm);
         RotateRightWheelDistance(dist_mm); 

@@ -61,7 +61,7 @@ void configurePWM(void){
 
     OC3CON1bits.OCTSEL = 0b011; //set PWM on pin 5 (servo) to use internal system clock
     
-    OC3CON1bits.OCM = PWM_ON; //initially ENSABLE PWM on pin 5
+    OC3CON1bits.OCM = PWM_OFF; //initially ENSABLE PWM on pin 5
     
     OC3CON2bits.SYNCSEL = 0x1F; //configure PWM module sync source on pin 5
     

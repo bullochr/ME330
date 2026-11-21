@@ -26,37 +26,40 @@ void stateMachine(){
             
             if(allQrdsWhite()){//check if the robot ran into a T in the line
                 //turn on led to signal state change
-//                blinkLED1(1);
-                led_1_state = 1;
-                driveDistanceBlocking(DIST_AXLE_TO_QRDS + LINE_WIDTH);  
-                led_1_state = 0;
+                driveDistanceBlocking(DIST_AXLE_TO_QRDS + LINE_WIDTH);
                 state.state_num = 2;
-//                
+                
             } else if (allQrdsBlack()){ //check if the robot entered the canyon
-//                blinkLED2(2);
-//                initializeCanyonNavigation();
-//                state.state_num = 10;
+                blinkLED2(2);
+                resetWheelsState();
+                driveForwardDistance(10); // drive straight a few steps and check if qrds are still black. 
+                                            //This prevents false positives when crossing between tiles
+                while(!bothWheelsFinished());
+                
+                if(allQrdsBlack()){
+                    initializeCanyonNavigation();
+                    state.state_num = 10;
+                }else{
+                    initializeLineFollowing();
+                }
             }
             break;
             
         case 2: //both wheels are on the line, this state will turn the robot to prepare for line following
-            
-//            if (right_sharp_value < RIGHT_SHARP_THRESH_DIST && left_sharp_value > LEFT_SHARP_THRESH_DIST){
-//                blinkLED1(1);
-//                setLeftWheelVelocity(-SLOW_WHEEL_VELOCITY);
-//                setRightWheelVelocity(SLOW_WHEEL_VELOCITY);
+            if (right_sharp_value < RIGHT_SHARP_THRESH_DIST && left_sharp_value > LEFT_SHARP_THRESH_DIST){
+                setLeftWheelVelocity(-SLOW_WHEEL_VELOCITY);
+                setRightWheelVelocity(SLOW_WHEEL_VELOCITY);
 
-//            } else{
-            led_2_state = 1;
+            } else{
                 setLeftWheelVelocity(SLOW_WHEEL_VELOCITY);
                 setRightWheelVelocity(-SLOW_WHEEL_VELOCITY);
-//            }    
+            }    
             state.state_num = 3;
             break;
             
         case 3: 
             if(right_qrd_value > BLACK_THRESHOLD && center_qrd_value < WHITE_THRESHOLD && left_qrd_value > BLACK_THRESHOLD){
-                led_2_state = 0;
+                resetWheelsState();
                 initializeLineFollowing();
                 state.state_num = 0;
             }
@@ -66,37 +69,28 @@ void stateMachine(){
             if (allQrdsWhite()){
                 driveDistanceBlocking(DIST_AXLE_TO_QRDS + LINE_WIDTH);
                 state.state_num = 2;
-                blinkLED1(1);
+//                blinkLED1(1);
             }
             if (front_sharp_value > FRONT_SHARP_THRESH_DIST){
                 //right detects a wall, left doesnt
                 if (right_sharp_value > RIGHT_SHARP_THRESH_DIST && left_sharp_value < LEFT_SHARP_THRESH_DIST){
-                    resetWheelsState();
-                    led_1_state = 1;
-                    led_2_state = 0;
+//                    resetWheelsState();
                     turn90Degrees(0);
                     state.state_num = 11;
                     
                 //right doesnt detect a wall, left does
                 } else if (right_sharp_value < RIGHT_SHARP_THRESH_DIST && left_sharp_value > LEFT_SHARP_THRESH_DIST){
-                    resetWheelsState();
-                    led_1_state = 0;
-                    led_2_state = 1;
+//                    resetWheelsState();
                     turn90Degrees(1);
                     state.state_num = 11;
                 
                 //both walls detected
                 }else if (right_sharp_value > RIGHT_SHARP_THRESH_DIST && left_sharp_value > LEFT_SHARP_THRESH_DIST){
-                    resetWheelsState();
-                    led_1_state = 1;
-                    led_2_state = 1;
+//                    resetWheelsState();
                     driveForwardDistance(610);
                     state.state_num = 10;
                 
                 //no walls detected. This shouldnt happen
-                }else {
-                    //blink red led rapidly 5 times
-                    errorLED2(5, 1000);
                 }
             }      
             break;
@@ -144,15 +138,10 @@ int main(void) {
     
     initializeLineFollowing();
     
+    
     while(1){ 
         if (state.state_num != 0){
             updateWheelVelocity();
-        }
-        
-        if(right_qrd_value > BLACK_THRESHOLD && center_qrd_value < WHITE_THRESHOLD && left_qrd_value > BLACK_THRESHOLD){
-            led_2_state = 1;
-        }else {
-            led_2_state = 0;
         }
         
         stateMachine();
