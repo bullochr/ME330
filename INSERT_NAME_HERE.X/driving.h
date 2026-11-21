@@ -426,6 +426,17 @@ void turn90DegreesBlocking(int turn_left){
     
     while(!bothWheelsFinished()){
         updateWheelVelocity();
+char leftQrdOnLine(void)   { return left_qrd_value   < WHITE_THRESHOLD; }
+char centerQrdOnLine(void) { return center_qrd_value < WHITE_THRESHOLD; }
+
+void turn180Degrees(int turn_left){
+    int dist_mm = (int)(0.5*PI*ROBOT_WIDTH_MM) + 40;
+    if(turn_left){
+        RotateLeftWheelDistance(-dist_mm);
+        RotateRightWheelDistance(dist_mm);
+    }else{
+        RotateLeftWheelDistance(dist_mm);
+        RotateRightWheelDistance(-dist_mm);
     }
 }
 
