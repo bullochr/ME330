@@ -46,17 +46,71 @@ void stateMachine(){
 //                turn90Degrees(0);
 //                state.state_num = 20;
 //            }
+            if (center_qrd_value < CENTER_QRD_WHITE_THRESHOLD && sample_collection_value < PHOTO_DIODE_THRESHOLD){
+                blinkLED1(3);
+                turn90DegreesBlocking(0);
+                setServoAngle(30);                         //ANGLE NEEDS ADJUSTING FOR BALL PICKUP
+                driveDistanceBlocking(100);                //needs adjusting for distance to ball dispenser
+                double timercount = 0;
+                while (timercount <50000){
+                    timercount++;
+                }
+                if (ball_qrd_value < WHITE_THRESHOLD){
+                    state.ball_white = 1;
+                    driveBackwardDistance(100);            //ditto needs adjusting
+                    state.state_num = 30;
+                }
+                if ((ball_qrd_value > BLACK_THRESHOLD)){
+                    state.ball_white = 0;
+                    driveBackwardDistance(130);
+                    state.state_num = 30;
+                }
+            }
+
+            if (center_qrd_value < CENTER_QRD_WHITE_THRESHOLD && left_sharp_value > LEFT_SHARP_THRESH_DIST && right_sharp_value > RIGHT_SHARP_THRESH_DIST){
+                blinkLED2(3);
+                driveDistanceBlocking(100); //correction value if needed to get to the center of the bin after turning
+                if (state.ball_white == 1){        //if ball is WHITE
+                    turn90DegreesBlocking(1);
+                    state.turneddirection = 1; //note that we have turned LEFT
+                    driveDistanceBlocking(50);   //ADJUST TO REACH BIN
+                    setServoAngle(20);
+                    double servo_time = 0;
+                    while (servo_time < 100000){
+                        servo_time++;
+                    }
+                    setServoAngle(60);
+                    driveBackwardDistance(30);  //ADJUST TO RETURN TO LINE
+                    state.state_num = 31;     //set to ball deposit state
+                }
+                if (state.ball_white == 0){    //IF BALL BLACK
+                    turn90DegreesBlocking(0);
+                    state.turneddirection = 0;           //note that we have turned right
+                    driveDistanceBlocking(30);            //ADJUST TO REACH BIN
+                    setServoAngle(20);
+                    double servo_time = 0;
+                    while (servo_time < 100000){
+                        servo_time++;
+                    }
+                    setServoAngle(60);
+                    driveBackwardDistance(30);           //ADJUST TO RETURN TO LINE
+                    state.state_num = 31;                 //set to ball deposit state
+                }
+                else {
+                    
+                }
+            }            
             break;
             
         case 2: //both wheels are on the line, this state will turn the robot to prepare for line following
             
             if (right_sharp_value < RIGHT_SHARP_THRESH_DIST && left_sharp_value > LEFT_SHARP_THRESH_DIST){
-                blinkLED1(1);
+                //blinkLED1(1);
                 setLeftWheelVelocity(-SLOW_WHEEL_VELOCITY);
                 setRightWheelVelocity(SLOW_WHEEL_VELOCITY);
 
             } else{
-                blinkLED2(1);
+                //blinkLED2(1);
                 setLeftWheelVelocity(SLOW_WHEEL_VELOCITY);
                 setRightWheelVelocity(-SLOW_WHEEL_VELOCITY);
             }    
@@ -65,7 +119,7 @@ void stateMachine(){
             
         case 3: 
             if(right_qrd_value > BLACK_THRESHOLD && center_qrd_value < CENTER_QRD_WHITE_THRESHOLD && left_qrd_value > BLACK_THRESHOLD){
-                blinkLED2(2);
+                //blinkLED2(2);
                 initializeLineFollowing();
                 state.state_num = 0;
             }
@@ -75,7 +129,7 @@ void stateMachine(){
             if (allQrdsWhite()){
                 driveDistanceBlocking(DIST_AXLE_TO_QRDS + LINE_WIDTH);
                 state.state_num = 2;
-                blinkLED1(1);
+                //blinkLED1(1);
             }
             if (front_sharp_value > FRONT_SHARP_THRESH_DIST){
                 //right detects a wall, left doesnt
@@ -102,7 +156,7 @@ void stateMachine(){
                     driveForwardDistance(610);
                     state.state_num = 10;
                 
-                //no walls detected. This shouldnt happen
+                //no walls detected. This shouldn't happen
                 }else {
                     //blink red led rapidly 5 times
                     errorLED2(5, 1000);
@@ -175,7 +229,30 @@ void stateMachine(){
             //Do nothing
             break;
             
-        case 30:
+        case 30: // BALL COLLECT BACK TO LINE FOLLOWING
+            if (center_qrd_value > CENTER_QRD_WHITE_THRESHOLD){
+                driveBackwardDistance(10);
+            }
+            else if (center_qrd_value <= CENTER_QRD_WHITE_THRESHOLD){
+                //turn90DegreesBlocking(1);
+            driveDistanceBlocking(DIST_AXLE_TO_QRDS);
+                state.state_num = 2;
+            }
+            break;
+        case 31: // BALL DEPOSIT BACK TO LINE FOLLOWING
+            if (center_qrd_value > CENTER_QRD_WHITE_THRESHOLD) {
+                driveBackwardDistance(10);
+            }
+            if (center_qrd_value <= CENTER_QRD_WHITE_THRESHOLD && state.turneddirection == 1){  //If hit the line and had previously turned left
+                turn90DegreesBlocking(0);
+                state.turneddirection = -1;
+                state.state_num = 0;
+            }
+            if (center_qrd_value < CENTER_QRD_WHITE_THRESHOLD && state.turneddirection == 0){  //If hit the line and had previously turned left
+                turn90DegreesBlocking(1);
+                state.turneddirection = -1;
+                state.state_num = 0;
+            }
             break;
         
         default:
@@ -194,6 +271,7 @@ int main(void) {
     T1CONbits.TCKPS = 0;
     TMR1 = 0;
     
+    
     //initialize a struct to hold the states of each custom flag
     flags = initializeFlags();
     
@@ -203,11 +281,48 @@ int main(void) {
     state.state_num = 0;     
     
     initializeLineFollowing();
+            //More Debugging feel free to delete after ball collect completed
+//    setServoAngle(30);
+//    driveDistanceBlocking(1000);
+
+
+    
+    
     
     while(1){ 
         updateWheelVelocity();
         stateMachine();
+
+        
+        
+        
+        //MORE DEBUG OF BALL QRD
+//        if (ball_qrd_value < WHITE_THRESHOLD){
+//            state.ball_white = 1;
+//           //ditto needs adjusting
+//            led_1_state = 1;
+//        }
+//        else{
+//            led_1_state = 0;
+//        }
+//        if ((ball_qrd_value >= WHITE_THRESHOLD)){
+//            state.ball_white = 0;
+//            led_2_state = 1;
+//        }
+//        else{
+//            led_2_state = 0;
+//        }
+        
+           //DEBUGGING CODE FOR BALL STUFF (DELETE once merged is FINE)
+//        if (sample_collection_value < PHOTO_DIODE_THRESHOLD){
+//            led_1_state = 1;
+//        }
+//        else{
+//            led_1_state = 0;
+//        }
+        
     }
-    
     return 0;
 }
+
+

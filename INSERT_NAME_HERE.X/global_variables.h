@@ -63,6 +63,7 @@ const int WHITE_THRESHOLD = 1000; //qrd values below this are considered to be o
 const int BLACK_THRESHOLD = 2500; //qrd values above this are considered to be off the line 
 const int CENTER_QRD_WHITE_THRESHOLD = 1000;
 const int CENTER_QRD_BLACK_THRESHOLD = 2500;
+const int PHOTO_DIODE_THRESHOLD = 1500; //still need refining probably, initial guess 2500
 
 const int MAX_SERVO_ANGLE = 70;
 const int MIN_SERVO_ANGLE = 20;
