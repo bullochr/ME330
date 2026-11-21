@@ -216,7 +216,7 @@ char allQrdsBlack(void){
 
 int getCorrectionFactor(void){
     //calculate signed error: a value between ... that describes how far from the line we are 
-    float e_p = ((int)left_qrd_value - (int)right_qrd_value);
+    float e_p = ((int)right_qrd_value - (int)left_qrd_value);
     
     static float last_e_p = 0;
     static float e_i = 0;
@@ -404,8 +404,13 @@ void updateWheelVelocity(){
 
 void driveDistanceBlocking(int dist_mm){
     int num_steps = getNumSteps(dist_mm);
-    setRightWheelVelocity(SLOW_WHEEL_VELOCITY);
-    setLeftWheelVelocity(SLOW_WHEEL_VELOCITY);
+    if(dist_mm > 0){
+        setRightWheelVelocity(SLOW_WHEEL_VELOCITY);
+        setLeftWheelVelocity(SLOW_WHEEL_VELOCITY);
+    } else{
+        setRightWheelVelocity(-SLOW_WHEEL_VELOCITY);
+        setLeftWheelVelocity(-SLOW_WHEEL_VELOCITY);
+    }
     
     state.right_wheel_target_steps = num_steps;
     state.left_wheel_target_steps = num_steps;
@@ -426,6 +431,10 @@ void turn90DegreesBlocking(int turn_left){
     
     while(!bothWheelsFinished()){
         updateWheelVelocity();
+        
+    }
+}
+
 char leftQrdOnLine(void)   { return left_qrd_value   < WHITE_THRESHOLD; }
 char centerQrdOnLine(void) { return center_qrd_value < WHITE_THRESHOLD; }
 

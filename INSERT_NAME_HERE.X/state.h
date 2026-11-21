@@ -25,7 +25,7 @@ struct stateStruct{
     int right_wheel_target_steps;
     int left_wheel_num_completed_steps;
     int right_wheel_num_completed_steps;
-float left_wheel_velocity;
+    float left_wheel_velocity;
     float right_wheel_velocity;
     float left_wheel_target_velocity; //target speed, actual speed approaches this in ramping up
     float right_wheel_target_velocity;
@@ -33,7 +33,7 @@ float left_wheel_velocity;
     //BALL INFO
     int ball_white;
     int turneddirection;
-
+    int deposited_sample;
 };
 
 //contains custom flag states
@@ -71,6 +71,7 @@ struct stateStruct initializeState(void){
     //ball stuff
     state.ball_white = -1; //initializes by stating the ball color is -1, changed later in Main, when checked by qrd
     state.turneddirection = -1; //initializes by making saved direction = -1
+    state.deposited_sample = 0;
     
     return state;
 }

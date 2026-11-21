@@ -68,6 +68,7 @@ void __attribute__ ((interrupt, no_auto_psv)) _T2Interrupt(void){
     if(state.led_1_num_blinks == state.led_1_target_num_blinks){ //stop after target num blinks
         state.led_1_num_blinks = 0;
         state.led_1_target_num_blinks = 0;
+        T2CONbits.TON = 0;
         _T2IE = 0; //disable timer 2 interrupt until called again
     }
 }
@@ -84,6 +85,7 @@ void __attribute__ ((interrupt, no_auto_psv)) _T3Interrupt(void){
     if(state.led_2_num_blinks == state.led_2_target_num_blinks){ //stop after target num blinks
         state.led_2_num_blinks = 0;
         state.led_2_target_num_blinks = 0;
+        T3CONbits.TON = 0;
         _T3IE = 0; //disable timer 2 interrupt until called again
     }
 }

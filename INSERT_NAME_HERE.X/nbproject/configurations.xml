@@ -14,6 +14,7 @@
       <itemPath>bucket_servo.h</itemPath>
       <itemPath>LEDs.h</itemPath>
       <itemPath>wait.h</itemPath>
+      <itemPath>ball_collection.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

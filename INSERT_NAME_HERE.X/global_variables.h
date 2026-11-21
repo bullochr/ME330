@@ -14,9 +14,9 @@
 #include <xc.h> // include processor files - each processor file is guarded.  
 
 //register definitions - inputs
-#define right_qrd_value ADC1BUF4 
+#define left_qrd_value ADC1BUF4
+#define right_qrd_value ADC1BUF14 
 #define center_qrd_value ADC1BUF13 
-#define right_qrd_value ADC1BUF14 //TODO: reset this to ADC1BUF14 (pin 8), figure out why pin 8 has so much noise, its currently on pin 2
 #define sample_collection_value ADC1BUF0
 #define ball_qrd_value ADC1BUF1
 #define satellite_sensor_value ADC1BUF12
@@ -62,10 +62,15 @@ const int PWM_ON = 0b110;
 const int WHITE_THRESHOLD = 1000; //qrd values below this are considered to be on the line 
 const int BLACK_THRESHOLD = 1500; //qrd values above this are considered to be off the line 
 
-const int PHOTO_DIODE_THRESHOLD = 1500; //still need refining probably, initial guess 2500
+const int BALL_COLOR_THRESHOLD = 2500; //still need refining probably, initial guess 2500
+const int PHOTO_DIODE_THRESHOLD = 1500;
 
 const int MAX_SERVO_ANGLE = 70;
-const int MIN_SERVO_ANGLE = 20;
+const int MIN_SERVO_ANGLE = 18;
+
+const int DIST_BEFORE_SAMPLE_COLLECTION = 60;
+const int SMAPLE_COLLECT_SERVO_ANGLE = 40;
+const int DIST_TO_SAMLE_COLLECTION = 450;
 
 const int LINE_WIDTH = 25;
 const int DIST_AXLE_TO_QRDS = 38; // how far in front of the axle the qrd sensors are
@@ -77,7 +82,7 @@ const int LAND_STEPS_MM = 300; // The distance needed to get into the landing zo
 //Line following
 const float BASE_WHEEL_VELOCITY = 1100.0; //fast
 //const float BASE_WHEEL_VELOCITY = 600.0; //testing
-const float SLOW_WHEEL_VELOCITY = 200.0;
+const float SLOW_WHEEL_VELOCITY = 400.0;
 const float KP = 1.0; //proportional error coefficient for PID line control
 const float KI = 0.0; //integral error coefficient for PID line control
 const float KD = 0.5; //derivative error coefficient for PID line control
