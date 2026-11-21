@@ -36,6 +36,7 @@ struct flagStruct{
     int left_wheel_reached_target;
     int right_wheel_reached_target;
     int ad_conversions_finished;
+    char finished_waiting;
 };
 
 //instantiate a state struct called state_var
@@ -70,6 +71,7 @@ struct flagStruct initializeFlags(void){
     flags.left_wheel_reached_target = 0;
     flags.right_wheel_reached_target = 0;
     flags.ad_conversions_finished = 0;
+    flags.finished_waiting = 0;
     
     return flags;
 }

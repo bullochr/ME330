@@ -8,6 +8,7 @@
 #include "PWM_config.h"
 #include "bucket_servo.h"
 #include "LEDs.h"
+#include "wait.h"
 
 //Oscillator setup
 #pragma config FNOSC = FRC //F_osc = 8MHz, F_cy = 4MHz 
@@ -136,15 +137,20 @@ int main(void) {
     
 //    state.state_num = 1;
     
-    initializeLineFollowing();
+//    initializeLineFollowing();
+    driveDistanceBlocking(200);
+    waitMsBlocking(1000);
+    driveDistanceBlocking(200);
+    
+    setServoAngle(50);
     
     
     while(1){ 
-        if (state.state_num != 0){
-            updateWheelVelocity();
-        }
-        
-        stateMachine();
+//        if (state.state_num != 0){
+//            updateWheelVelocity();
+//        }
+//        
+//        stateMachine();
     }
     
     return 0;
