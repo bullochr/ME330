@@ -88,7 +88,11 @@ void __attribute__ ((interrupt, no_auto_psv)) _T3Interrupt(void){
     }
 }
 
-
+//timer for blocking wait function
+void __attribute__ ((interrupt, no_auto_psv)) _T4Interrupt(void){
+    _T4IF = 0;
+    flags.finished_waiting = 1;
+}
 
 #endif	/* XC_HEADER_TEMPLATE_H */
 

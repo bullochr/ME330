@@ -13,6 +13,7 @@
       <itemPath>PWM_config.h</itemPath>
       <itemPath>bucket_servo.h</itemPath>
       <itemPath>LEDs.h</itemPath>
+      <itemPath>wait.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

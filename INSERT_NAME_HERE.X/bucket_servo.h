@@ -16,6 +16,7 @@
 
 //given angle in degrees between 0 and 180, set servo pwm
 void setServoAngle(int angle){
+    OC3CON1bits.OCM = PWM_ON;
     if (angle < MAX_SERVO_ANGLE){angle = MAX_SERVO_ANGLE;}
     if (angle < MIN_SERVO_ANGLE){angle = MIN_SERVO_ANGLE;}
     

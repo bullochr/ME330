@@ -25,7 +25,7 @@ struct stateStruct{
     int right_wheel_target_steps;
     int left_wheel_num_completed_steps;
     int right_wheel_num_completed_steps;
-    float left_wheel_velocity;
+float left_wheel_velocity;
     float right_wheel_velocity;
     float left_wheel_target_velocity; //target speed, actual speed approaches this in ramping up
     float right_wheel_target_velocity;
@@ -36,6 +36,7 @@ struct flagStruct{
     int left_wheel_reached_target;
     int right_wheel_reached_target;
     int ad_conversions_finished;
+    char finished_waiting;
 };
 
 //instantiate a state struct called state_var
@@ -70,6 +71,7 @@ struct flagStruct initializeFlags(void){
     flags.left_wheel_reached_target = 0;
     flags.right_wheel_reached_target = 0;
     flags.ad_conversions_finished = 0;
+    flags.finished_waiting = 0;
     
     return flags;
 }
