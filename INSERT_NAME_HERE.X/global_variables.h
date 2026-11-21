@@ -62,6 +62,8 @@ const int PWM_ON = 0b110;
 const int WHITE_THRESHOLD = 1000; //qrd values below this are considered to be on the line 
 const int BLACK_THRESHOLD = 1500; //qrd values above this are considered to be off the line 
 
+const int PHOTO_DIODE_THRESHOLD = 1500; //still need refining probably, initial guess 2500
+
 const int MAX_SERVO_ANGLE = 70;
 const int MIN_SERVO_ANGLE = 20;
 

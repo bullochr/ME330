@@ -29,6 +29,11 @@ float left_wheel_velocity;
     float right_wheel_velocity;
     float left_wheel_target_velocity; //target speed, actual speed approaches this in ramping up
     float right_wheel_target_velocity;
+    
+    //BALL INFO
+    int ball_white;
+    int turneddirection;
+
 };
 
 //contains custom flag states
@@ -63,6 +68,9 @@ struct stateStruct initializeState(void){
     state.left_wheel_velocity = 0.0;
     state.right_wheel_velocity = 0.0;
     
+    //ball stuff
+    state.ball_white = -1; //initializes by stating the ball color is -1, changed later in Main, when checked by qrd
+    state.turneddirection = -1; //initializes by making saved direction = -1
     
     return state;
 }
