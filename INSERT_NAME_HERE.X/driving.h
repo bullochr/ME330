@@ -15,6 +15,7 @@
 #include "global_variables.h"
 #include "stdlib.h"
 #include "state.h"
+#include "wait.h"
 
 //return number of steps for a wheel to take, given the desired distance traveled
 int getNumSteps(int dist_mm){
@@ -162,8 +163,6 @@ char bothWheelsFinished(){
     }
 }
 
-
-
 void driveBackwardDistance(int dist_mm){
     int num_steps = getNumSteps(dist_mm);
     setRightWheelVelocity(-BASE_WHEEL_VELOCITY);
@@ -175,6 +174,9 @@ void driveBackwardDistance(int dist_mm){
 
 //make a 90 degree turn. Pass a 1 to turn left, or a 0 to turn right
 void turn90Degrees(int turn_left){
+    setLeftWheelVelocity(0);
+    setRightWheelVelocity(0);
+    waitMsBlocking(250);
     int dist_mm = (int)(0.25*PI*ROBOT_WIDTH_MM) + 40; //calculates num_steps to travel 1/4 circumference of a circle with diam = ROBOT_WIDTH
     if(turn_left){ //rotate wheels equally in opposing directions
         RotateLeftWheelDistance(-dist_mm);
@@ -339,8 +341,9 @@ void canyonCorrection(){
 }
 
 void initializeCanyonNavigation(void){
-    setLeftWheelVelocity(BASE_WHEEL_VELOCITY);
-    setRightWheelVelocity(BASE_WHEEL_VELOCITY);
+//    setLeftWheelVelocity(BASE_WHEEL_VELOCITY);
+//    setRightWheelVelocity(BASE_WHEEL_VELOCITY);
+    driveDistanceBlocking(610);
 }
 
 void updateWheelVelocity(){
@@ -372,9 +375,16 @@ void updateWheelVelocity(){
 
     left_wheel_PWM_period = velocityToPeriod(abs(state.left_wheel_velocity));
     
+    //if it is supposed to be going straight, 
+    //force left and right wheels to the same speed
+    if(state.right_wheel_target_velocity == state.left_wheel_target_velocity){
+        right_wheel_PWM_period = left_wheel_PWM_period;
+        right_wheel_dir = left_wheel_dir;
+        state.right_wheel_velocity = state.left_wheel_velocity;
+    
     //RIGHT WHEEL    
     //check if velocity is within the step size (RAMP_UP_SPEED) of the target
-    if (state.right_wheel_velocity != state.right_wheel_target_velocity){
+    }else if (state.right_wheel_velocity != state.right_wheel_target_velocity){
         if(abs(state.right_wheel_velocity - state.right_wheel_target_velocity) > RAMP_UP_SPEED){
             if(state.right_wheel_velocity < state.right_wheel_target_velocity){
                 state.right_wheel_velocity += RAMP_UP_SPEED;
@@ -398,7 +408,7 @@ void updateWheelVelocity(){
     } else{
         right_wheel_dir = BACKWARD;
     }
-
+   
     right_wheel_PWM_period = velocityToPeriod(abs(state.right_wheel_velocity));  
 }
 

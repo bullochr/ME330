@@ -7,7 +7,7 @@
 #include "state.h" // include processor files - each processor file is guarded.  
 
 void waitMsBlocking(int ms){
-    ms = ms / 4; //MYstEry COeFFiCienT
+//    ms = ms / 4; //MYstEry COeFFiCienT
     T4CON = 0; //clears timer 5 configuration register
     TMR4 = 0;
     T4CONbits.TCKPS = 0b11; //sets a prescaler value of 256

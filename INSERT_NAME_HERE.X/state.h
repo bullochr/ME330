@@ -34,6 +34,11 @@ struct stateStruct{
     int ball_white;
     int turneddirection;
     int deposited_sample;
+    
+    int num_canyon_tiles_finished;
+    
+    char finished_canyon;
+    char collected_sample;
 };
 
 //contains custom flag states
@@ -72,6 +77,9 @@ struct stateStruct initializeState(void){
     state.ball_white = -1; //initializes by stating the ball color is -1, changed later in Main, when checked by qrd
     state.turneddirection = -1; //initializes by making saved direction = -1
     state.deposited_sample = 0;
+    state.collected_sample = 0;
+    state.finished_canyon = 0;
+    state.num_canyon_tiles_finished = 0;
     
     return state;
 }

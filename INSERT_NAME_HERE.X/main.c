@@ -10,6 +10,7 @@
 #include "LEDs.h"
 #include "wait.h"
 #include "ball_collection.h"
+#include "task_integration.h"
 
 //Oscillator setup
 #pragma config FNOSC = FRC //F_osc = 8MHz, F_cy = 4MHz 
@@ -26,34 +27,28 @@ void stateMachine(){
                 followLine();
             }
             
-//            if(allQrdsWhite()){//check if the robot ran into a T in the line
-//                //turn on led to signal state change
-//                driveDistanceBlocking(DIST_AXLE_TO_QRDS + LINE_WIDTH);
-//                state.state_num = 2;
+            if(allQrdsWhite()){//check if the robot ran into a T in the line
+                //turn on led to signal state change
+                driveDistanceBlocking(DIST_AXLE_TO_QRDS + LINE_WIDTH);
+                state.state_num = 2;
 //                
-//            } else if (allQrdsBlack()){ //check if the robot entered the canyon
-//                blinkLED2(2);
-//                resetWheelsState();
-//                driveDistanceBlocking(10); // drive straight a few steps and check if qrds are still black. 
-//                                            //This prevents false positives when crossing between tiles
-//                
-//                if(allQrdsBlack()){
-//                    initializeCanyonNavigation();
-//                    state.state_num = 10;
-//                }else{
-//                    initializeLineFollowing();
-//                }
-//            }
-//            
-            //TODO: update trigger condition, remove && 0
-//            if (leftQrdOnLine() && centerQrdOnLine() && 0){ //Land trigger
-//                turn90Degrees(0);
-//                state.state_num = 20;
-//            }
-            
+            } else if (allQrdsBlack()){ //check if the robot entered the canyon
+                blinkLED2(2);
+                resetWheelsState();
+                driveDistanceBlocking(10); // drive straight a few steps and check if qrds are still black. 
+                                            //This prevents false positives when crossing between tiles
+                
+                if(allQrdsBlack()){
+                    initializeCanyonNavigation();
+                    state.state_num = 10;
+                }else{
+                    initializeLineFollowing();
+                }
+            }
+
             //transition to sample collection
             //only if ball hasn't been collected yet
-            if (state.ball_white == -1 && center_qrd_value < WHITE_THRESHOLD && sample_collection_value < PHOTO_DIODE_THRESHOLD){
+            if (state.collected_sample == 0 && center_qrd_value < WHITE_THRESHOLD && sample_collection_value < PHOTO_DIODE_THRESHOLD){
                 blinkLED1(3);
                 driveDistanceBlocking(DIST_BEFORE_SAMPLE_COLLECTION);
                 turn90DegreesBlocking(1);
@@ -73,11 +68,12 @@ void stateMachine(){
                     led_2_state = 1;
                 }
                 resetWheelsState();
-                driveDistanceBlocking(-100);            //ditto needs adjusting
+                driveDistanceBlocking(-100);     
+                state.collected_sample = 1;
                 state.state_num = 30;
             }
 
-            if (state.deposited_sample == 0 && center_qrd_value < WHITE_THRESHOLD && left_sharp_value > LEFT_SHARP_THRESH_DIST && right_sharp_value > RIGHT_SHARP_THRESH_DIST){
+            if (state.collected_sample == 1 && state.deposited_sample == 0 && center_qrd_value < WHITE_THRESHOLD && left_sharp_value > LEFT_SHARP_DEPOSIT_DIST && right_sharp_value > RIGHT_SHARP_DEPOSIT_DIST){
                 blinkLED2(3); //correction value if needed to get to the center of the bin after turning
                 depositSample();
             }
@@ -110,53 +106,41 @@ void stateMachine(){
         case 3: 
             if(right_qrd_value > BLACK_THRESHOLD && center_qrd_value < WHITE_THRESHOLD && left_qrd_value > BLACK_THRESHOLD){
                 resetWheelsState();
-                initializeLineFollowing();
-                state.state_num = 0;
+                if (allTasksComplete()){ //go to satellite transmission
+                    driveForwardDistance(610);
+                    state.state_num = 21;
+                }else{
+                    initializeLineFollowing();
+                    state.state_num = 0;
+                }
             }
             break;
             
         case 10: //Canyon Forward
             if (allQrdsWhite()){
+                led_1_state = 1;
+                led_2_state = 1;
                 driveDistanceBlocking(DIST_AXLE_TO_QRDS + LINE_WIDTH);
                 state.state_num = 2;
-//                blinkLED1(1);
+                state.finished_canyon = 1;
             }
-            if (front_sharp_value > FRONT_SHARP_THRESH_DIST){
+            
+            if(state.num_canyon_tiles_finished >= 3){
+                setLeftWheelVelocity(SLOW_WHEEL_VELOCITY);
+                setRightWheelVelocity(SLOW_WHEEL_VELOCITY);
+            }else{
+                state.num_canyon_tiles_finished++;
+
                 //right detects a wall, left doesnt
                 if (right_sharp_value > RIGHT_SHARP_THRESH_DIST && left_sharp_value < LEFT_SHARP_THRESH_DIST){
-//                    resetWheelsState();
-                    turn90Degrees(0);
-                    state.state_num = 11;
-                    
+                    turn90DegreesBlocking(0);
+
                 //right doesnt detect a wall, left does
                 } else if (right_sharp_value < RIGHT_SHARP_THRESH_DIST && left_sharp_value > LEFT_SHARP_THRESH_DIST){
-//                    resetWheelsState();
-                    turn90Degrees(1);
-                    state.state_num = 11;
-                
-                //both walls detected
-                }else if (right_sharp_value > RIGHT_SHARP_THRESH_DIST && left_sharp_value > LEFT_SHARP_THRESH_DIST){
-//                    resetWheelsState();
-                    driveForwardDistance(610);
-                    state.state_num = 10;
-                
-                //no walls detected. This shouldnt happen
+                    turn90DegreesBlocking(1);
                 }
-            }      
-            break;
-            
-        case 11: //Canyon Turn
-            if (bothWheelsFinished()){
-                setLeftWheelVelocity(BASE_WHEEL_VELOCITY);
-                setRightWheelVelocity(BASE_WHEEL_VELOCITY);
-                
-                state.state_num = 10;
-            }
-        
-         case 20: //Landing approach: finish left turn, start driving
-            if (bothWheelsFinished()){
-                driveForwardDistance(610);
-                state.state_num = 21;
+
+                driveDistanceBlocking(610);
             }
             break;
             
@@ -246,13 +230,13 @@ int main(void) {
     state.state_num = 0;
     
     initializeLineFollowing();
-    
+     
     while(1){ 
        if (state.state_num != 0){
            updateWheelVelocity();
        }
        stateMachine();
-
+        
     }
     return 0;
 }
