@@ -28,21 +28,28 @@ void stateMachine(){
             }
             
             if(allQrdsWhite()){//check if the robot ran into a T in the line
-                //turn on led to signal state change
-                driveDistanceBlocking(DIST_AXLE_TO_QRDS + LINE_WIDTH);
+                driveDistanceBlocking(DIST_AXLE_TO_QRDS + LINE_WIDTH, SLOW_WHEEL_VELOCITY);
                 state.state_num = 2;
-//                
-            } else if (allQrdsBlack()){ //check if the robot entered the canyon
-                blinkLED2(2);
-                resetWheelsState();
-                driveDistanceBlocking(10); // drive straight a few steps and check if qrds are still black. 
-                                            //This prevents false positives when crossing between tiles
                 
+            } else if (allQrdsBlack()){ //check if the robot entered the canyon
+                resetWheelsState();
+                driveDistanceBlocking(10, BASE_WHEEL_VELOCITY); // drive straight a few steps and check if qrds are still black. 
+                                            //This prevents false positives when crossing between tiles
+
                 if(allQrdsBlack()){
-                    initializeCanyonNavigation();
-                    state.state_num = 10;
+                    if(state.finished_canyon == 0){
+                        initializeCanyonNavigation();
+                        state.state_num = 10;
+                    } else if (state.all_tasks_finished){
+                        resetWheelsState();          // cancel the current forward move
+                        turn90DegreesBlocking(1);
+                        turn90DegreesBlocking(1);
+                        driveDistanceBlocking(50, SLOW_WHEEL_VELOCITY);
+                        state.state_num = 24;
+                    }
                 }else{
                     initializeLineFollowing();
+                    state.state_num = 0;
                 }
             }
 
@@ -50,10 +57,10 @@ void stateMachine(){
             //only if ball hasn't been collected yet
             if (state.collected_sample == 0 && center_qrd_value < WHITE_THRESHOLD && sample_collection_value < PHOTO_DIODE_THRESHOLD){
                 blinkLED1(3);
-                driveDistanceBlocking(DIST_BEFORE_SAMPLE_COLLECTION);
+                driveDistanceBlocking(DIST_BEFORE_SAMPLE_COLLECTION, BASE_WHEEL_VELOCITY);
                 turn90DegreesBlocking(1);
                 setServoAngle(SMAPLE_COLLECT_SERVO_ANGLE);                         //ANGLE NEEDS ADJUSTING FOR BALL PICKUP
-                driveDistanceBlocking(DIST_TO_SAMLE_COLLECTION);                //needs adjusting for distance to ball dispenser
+                driveDistanceBlocking(DIST_TO_SAMLE_COLLECTION, BASE_WHEEL_VELOCITY);                //needs adjusting for distance to ball dispenser
                 waitMsBlocking(1000);
                 setServoAngle(MAX_SERVO_ANGLE); //increase servo angle to keep ball in 
                 waitMsBlocking(1500); //wait for bouncing to settle before measuring color
@@ -68,7 +75,8 @@ void stateMachine(){
                     led_2_state = 1;
                 }
                 resetWheelsState();
-                driveDistanceBlocking(-100);     
+                setLeftWheelVelocity(-SLOW_WHEEL_VELOCITY);
+                setRightWheelVelocity(-SLOW_WHEEL_VELOCITY);
                 state.collected_sample = 1;
                 state.state_num = 30;
             }
@@ -76,51 +84,56 @@ void stateMachine(){
             if (state.collected_sample == 1 && state.deposited_sample == 0 && center_qrd_value < WHITE_THRESHOLD && left_sharp_value > LEFT_SHARP_DEPOSIT_DIST && right_sharp_value > RIGHT_SHARP_DEPOSIT_DIST){
                 blinkLED2(3); //correction value if needed to get to the center of the bin after turning
                 depositSample();
+                state.deposited_sample = 1;
+                state.state_num = 30;  
             }
             break;
             
-        case 2: //both wheels are on the line, this state will turn the robot to prepare for line following
+        case (2): //both wheels are on the line, this state will turn the robot to prepare for line following
+            ; //this prevents a compiler error due to a declaration following a label
+            int turn_left = 0;
             if (state.turneddirection != -1){ //this means we are returning from ball deposition
                 if (state.turneddirection == 1){  //If hit the line and had previously turned left
-                    turn90DegreesBlocking(0);
+                    turn_left = -1;
                     state.turneddirection = -1;
                 }
+                
                 else if (state.turneddirection == 0){  //If hit the line and had previously turned left
-                    turn90DegreesBlocking(1);
+                    turn_left = 1;
                     state.turneddirection = -1;
                 }
-                state.deposited_sample = 1;
+                
             }else{
                 if (right_sharp_value < RIGHT_SHARP_THRESH_DIST && left_sharp_value > LEFT_SHARP_THRESH_DIST){
-                    setLeftWheelVelocity(-SLOW_WHEEL_VELOCITY);
-                    setRightWheelVelocity(SLOW_WHEEL_VELOCITY);
-
-                } else{
-                    setLeftWheelVelocity(SLOW_WHEEL_VELOCITY);
-                    setRightWheelVelocity(-SLOW_WHEEL_VELOCITY);
+                    turn_left = 1;
+                } 
+                
+                else{
+                    turn_left = -1;
                 }    
-                state.state_num = 3;
             }
+            
+            setLeftWheelVelocity(-turn_left * SLOW_WHEEL_VELOCITY);
+            setRightWheelVelocity(turn_left * SLOW_WHEEL_VELOCITY);
+            state.state_num = 3;
             break;
             
         case 3: 
-            if(right_qrd_value > BLACK_THRESHOLD && center_qrd_value < WHITE_THRESHOLD && left_qrd_value > BLACK_THRESHOLD){
+            if(right_qrd_value > LOOSE_BLACK_THRESHOLD && center_qrd_value < WHITE_THRESHOLD && left_qrd_value > LOOSE_BLACK_THRESHOLD){
                 resetWheelsState();
-                if (allTasksComplete()){ //go to satellite transmission
-                    driveForwardDistance(610);
-                    state.state_num = 21;
-                }else{
-                    initializeLineFollowing();
-                    state.state_num = 0;
+                initializeLineFollowing();
+                if (state.deposited_sample){
+                    state.all_tasks_finished = 1;
                 }
+                state.state_num = 0;
             }
             break;
             
         case 10: //Canyon Forward
-            if (allQrdsWhite()){
+            if (noQrdsBlack()){
                 led_1_state = 1;
                 led_2_state = 1;
-                driveDistanceBlocking(DIST_AXLE_TO_QRDS + LINE_WIDTH);
+                driveDistanceBlocking(DIST_AXLE_TO_QRDS + LINE_WIDTH, BASE_WHEEL_VELOCITY);
                 state.state_num = 2;
                 state.finished_canyon = 1;
             }
@@ -140,51 +153,41 @@ void stateMachine(){
                     turn90DegreesBlocking(1);
                 }
 
-                driveDistanceBlocking(610);
-            }
-            break;
-            
-         case 21: // Landing approach: forward until front sharp sees the wall
-            if (front_sharp_value > FRONT_SHARP_THRESH_DIST){
-                resetWheelsState();          // cancel the current forward move
-                turn180Degrees(1);
-                state.state_num = 23;        // skip 22, it's no longer needed
-            }
-            else if (bothWheelsFinished()){
-                driveForwardDistance(610);   // keep going in chunks until the wall appears
-            }
-            break;
-        
-        case 23: //Landing approach: finish 180, begin landing zone
-            if (bothWheelsFinished()){
-                state.state_num = 24;
+                driveDistanceBlocking(TILE_WIDTH, CANYON_WHEEL_VELOCITY);
             }
             break;
             
         case 24: //Landing Zone
-            if (satellite_sensor_value < IR_SATELITE_THRESH){
-                
-                static float servo_angle = 0;
-                
-                setServoAngle(servo_angle);
-                servo_angle = servo_angle + .01;
-                
-                if (satellite_sensor_value > 200){ //use to test IR Threshold needed
-                    led_1_state = 1;}
-                
-                if (satellite_sensor_value > 100){ //use to test IR Threshold needed
-                    led_2_state = 1;}
-                
-                if (servo_angle > 180){
-                    servo_angle = 0;
-                    led_1_state = 0;
-                    led_2_state = 0;
-                }
-            }
+            ;
+            static int best_servo_angle = 0;
+            static int highest_sensor_value = 0; //more IR light -> lower sensor value
+//            static int first_saturated_angle = 0;
+            static float servo_angle = 20;
             
-            if (satellite_sensor_value > IR_SATELITE_THRESH){
-
-               
+            if (servo_angle < MAX_SERVO_ANGLE+10){
+                                
+                setServoAngle((int)servo_angle);
+                waitMsBlocking(50);
+                
+                if(satellite_sensor_value > highest_sensor_value){
+//                    if (satellite_sensor_value > 3900 && first_saturated_angle == 0){
+//                        first_saturated_angle = servo_angle;
+//                    }
+                    highest_sensor_value = satellite_sensor_value;
+                    best_servo_angle = servo_angle;
+                }
+                
+                servo_angle = servo_angle + 1;
+                
+                
+            } else{
+                
+                //if the sensor was saturated, find midpoint of saturated values
+//                if(first_saturated_angle != 0){
+//                    best_servo_angle = (best_servo_angle + first_saturated_angle) / 2;
+//                }
+                setServoAngle(best_servo_angle);
+                waitMsBlocking(500); //allow servo time to reach best_servo_angle
                 laser_state = 1;
                 state.state_num = 25;
             }
@@ -195,11 +198,11 @@ void stateMachine(){
             break;
             
         case 30: // BALL COLLECT BACK TO LINE FOLLOWING
-            if (center_qrd_value > WHITE_THRESHOLD){
-                driveDistanceBlocking(-10);
-            }
-            else if (center_qrd_value <= WHITE_THRESHOLD){
-                driveDistanceBlocking(DIST_AXLE_TO_QRDS+10);
+//            if (center_qrd_value > WHITE_THRESHOLD){
+//                driveDistanceBlocking(-10);
+//            }else 
+            if (noQrdsBlack()){
+                driveDistanceBlocking(DIST_AXLE_TO_QRDS+10, BASE_WHEEL_VELOCITY);
                 state.state_num = 2;
             }
             break;
@@ -236,7 +239,6 @@ int main(void) {
            updateWheelVelocity();
        }
        stateMachine();
-        
     }
     return 0;
 }

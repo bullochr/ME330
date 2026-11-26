@@ -38,14 +38,15 @@
 #define servo_pulse_width OC3R
 
 //Global constants
+const int TILE_WIDTH = 610;
 const float WHEEL_DIAMETER_MM = 89.95; //mm
 const int STEPS_PER_REV = 800; //quarter stepping
 const float PI = 3.141592;
 const float ROBOT_WIDTH_MM = 200.0; //distance from wheel to wheel
 const int SERVO_PWM_PERIOD = 10000; //leave this at 10000 to keep pwm at 50hz
 const int FRONT_SHARP_THRESH_DIST = 300; // Front SHARP distance. Higher = closer, lower = farther away
-const int LEFT_SHARP_THRESH_DIST = 600; // Left SHARP distance threshold. ~1.5 ft
-const int RIGHT_SHARP_THRESH_DIST = 1200; // RIght SHARP distance threshold. ~1.5 ft
+const int LEFT_SHARP_THRESH_DIST = 400; // Left SHARP distance threshold. ~1.5 ft
+const int RIGHT_SHARP_THRESH_DIST = 800; // RIght SHARP distance threshold. ~1.5 ft
 
 const int LEFT_SHARP_DEPOSIT_DIST = 1000; // Left SHARP distance threshold. ~1.5 ft
 const int RIGHT_SHARP_DEPOSIT_DIST = 2000; // RIght SHARP distance threshold. ~1.5 ft
@@ -62,8 +63,10 @@ const float CLOCK_FREQUENCY = 4000000.0;
 const int PWM_OFF = 0b000;
 const int PWM_ON = 0b110;
 
-const int WHITE_THRESHOLD = 2000; //qrd values below this are considered to be on the line 
-const int BLACK_THRESHOLD = 2000; //qrd values above this are considered to be off the line 
+const int WHITE_THRESHOLD = 1800; //qrd values below this are considered to be on the line 
+const int BLACK_THRESHOLD = 2400; //qrd values above this are considered to be off the line 
+const int LOOSE_BLACK_THRESHOLD = 1800;
+const int LOOSE_WHITE_THRESHOLD = 2400;
 
 const int BALL_COLOR_THRESHOLD = 2500; //still need refining probably, initial guess 2500
 const int PHOTO_DIODE_THRESHOLD = 1500;
@@ -71,27 +74,27 @@ const int PHOTO_DIODE_THRESHOLD = 1500;
 const int MAX_SERVO_ANGLE = 70;
 const int MIN_SERVO_ANGLE = 18;
 
-const int DIST_BEFORE_SAMPLE_COLLECTION = 60;
+const int DIST_BEFORE_SAMPLE_COLLECTION = 15;
 const int SMAPLE_COLLECT_SERVO_ANGLE = 40;
 const int DIST_TO_SAMLE_COLLECTION = 450;
 
 const int LINE_WIDTH = 25;
-const int DIST_AXLE_TO_QRDS = 38; // how far in front of the axle the qrd sensors are
+const int DIST_AXLE_TO_QRDS = 36; // how far in front of the axle the qrd sensors are
 //45 was too far
 
-const int IR_SATELITE_THRESH = 40; //Bucket servo will stop when this is hit while in landing zone
+const int IR_SATELITE_THRESH = 3000; //Bucket servo will stop when this is hit while in landing zone
 const int LAND_STEPS_MM = 300; // The distance needed to get into the landing zone
 
 //Line following
-const float BASE_WHEEL_VELOCITY = 1100.0; //fast
-//const float BASE_WHEEL_VELOCITY = 600.0; //testing
-const float SLOW_WHEEL_VELOCITY = 900.0;
+const float CANYON_WHEEL_VELOCITY = 900.0;
+const float BASE_WHEEL_VELOCITY = 1200.0; //fast
+const float SLOW_WHEEL_VELOCITY = 800.0;
 const float KP = 1.0; //proportional error coefficient for PID line control
 const float KI = 0.0; //integral error coefficient for PID line control
 const float KD = 0.5; //derivative error coefficient for PID line control
 const float SLOW_DOWN_COEFFICIENT = 0.2; //what portion of correction factor is applied to slow down the robot while turning
                                         //the sharper the robot is turning, the slower it will go
-const float RAMP_UP_SPEED = 5; //slope of ramp up function. Higher value is more 
+const float RAMP_UP_SPEED = 10; //slope of ramp up function. Higher value is more 
                              //responsive, lower value is less likely to skip steps
 
 

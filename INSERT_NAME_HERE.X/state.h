@@ -39,6 +39,7 @@ struct stateStruct{
     
     char finished_canyon;
     char collected_sample;
+    char all_tasks_finished;
 };
 
 //contains custom flag states
@@ -80,6 +81,7 @@ struct stateStruct initializeState(void){
     state.collected_sample = 0;
     state.finished_canyon = 0;
     state.num_canyon_tiles_finished = 0;
+    state.all_tasks_finished = 0;
     
     return state;
 }

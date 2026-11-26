@@ -212,6 +212,10 @@ char allQrdsWhite(void){
     return (left_qrd_value < WHITE_THRESHOLD && center_qrd_value < WHITE_THRESHOLD && right_qrd_value < WHITE_THRESHOLD);
 }
 
+char noQrdsBlack(){
+    return (left_qrd_value < BLACK_THRESHOLD && center_qrd_value < BLACK_THRESHOLD && right_qrd_value < BLACK_THRESHOLD);
+}
+
 char allQrdsBlack(void){
     return (left_qrd_value > BLACK_THRESHOLD && center_qrd_value > BLACK_THRESHOLD && right_qrd_value > BLACK_THRESHOLD);
 }
@@ -341,9 +345,7 @@ void canyonCorrection(){
 }
 
 void initializeCanyonNavigation(void){
-//    setLeftWheelVelocity(BASE_WHEEL_VELOCITY);
-//    setRightWheelVelocity(BASE_WHEEL_VELOCITY);
-    driveDistanceBlocking(610);
+    driveDistanceBlocking(TILE_WIDTH, CANYON_WHEEL_VELOCITY);
 }
 
 void updateWheelVelocity(){
@@ -412,14 +414,14 @@ void updateWheelVelocity(){
     right_wheel_PWM_period = velocityToPeriod(abs(state.right_wheel_velocity));  
 }
 
-void driveDistanceBlocking(int dist_mm){
+void driveDistanceBlocking(int dist_mm, float vel){
     int num_steps = getNumSteps(dist_mm);
     if(dist_mm > 0){
-        setRightWheelVelocity(SLOW_WHEEL_VELOCITY);
-        setLeftWheelVelocity(SLOW_WHEEL_VELOCITY);
+        setRightWheelVelocity(vel);
+        setLeftWheelVelocity(vel);
     } else{
-        setRightWheelVelocity(-SLOW_WHEEL_VELOCITY);
-        setLeftWheelVelocity(-SLOW_WHEEL_VELOCITY);
+        setRightWheelVelocity(-vel);
+        setLeftWheelVelocity(-vel);
     }
     
     state.right_wheel_target_steps = num_steps;
@@ -430,7 +432,7 @@ void driveDistanceBlocking(int dist_mm){
 }
 
 void turn90DegreesBlocking(int turn_left){
-    int dist_mm = (int)(0.25*PI*ROBOT_WIDTH_MM); //calculates num_steps to travel 1/4 circumference of a circle with diam = ROBOT_WIDTH
+    int dist_mm = (int)(0.25*PI*ROBOT_WIDTH_MM) + 5; //calculates num_steps to travel 1/4 circumference of a circle with diam = ROBOT_WIDTH
     if(turn_left){ //rotate wheels equally in opposing directions
         RotateLeftWheelDistance(-dist_mm);
         RotateRightWheelDistance(dist_mm); 
@@ -449,7 +451,7 @@ char leftQrdOnLine(void)   { return left_qrd_value   < WHITE_THRESHOLD; }
 char centerQrdOnLine(void) { return center_qrd_value < WHITE_THRESHOLD; }
 
 void turn180Degrees(int turn_left){
-    int dist_mm = (int)(0.5*PI*ROBOT_WIDTH_MM) + 40;
+    int dist_mm = (int)(0.5*PI*ROBOT_WIDTH_MM) + 30;
     if(turn_left){
         RotateLeftWheelDistance(-dist_mm);
         RotateRightWheelDistance(dist_mm);

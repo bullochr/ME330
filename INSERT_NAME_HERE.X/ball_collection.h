@@ -19,12 +19,13 @@ void depositSample(){
         state.turneddirection = 1; //note that we have turned RIGHT
     }
     waitMsBlocking(250);
-    driveDistanceBlocking(200);   //ADJUST TO REACH BIN
+    driveDistanceBlocking(200, BASE_WHEEL_VELOCITY);   //ADJUST TO REACH BIN
     setServoAngle(MIN_SERVO_ANGLE);
     waitMsBlocking(1000);
     setServoAngle(40);
     waitMsBlocking(1000);
-    state.state_num = 30;     //set to ball deposit state
+    setLeftWheelVelocity(-SLOW_WHEEL_VELOCITY);
+    setRightWheelVelocity(-SLOW_WHEEL_VELOCITY);
 }
 
 #endif	/* XC_HEADER_TEMPLATE_H */
